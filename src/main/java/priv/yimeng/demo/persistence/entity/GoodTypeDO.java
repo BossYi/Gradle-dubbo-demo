@@ -3,6 +3,7 @@ package priv.yimeng.demo.persistence.entity;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.Set;
 
 /**
  * Description: ${DESCRIPTION}
@@ -30,5 +31,9 @@ class GoodTypeDO {
     //排序
     @Column(name = "t_order")
     private Integer order;
+
+    @OneToMany(mappedBy = "goodTypeDO", fetch = FetchType.LAZY)
+    private Set<GoodInfoDO> goodInfoDOSet;
+
 
 }

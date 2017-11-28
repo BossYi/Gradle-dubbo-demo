@@ -34,7 +34,7 @@ class GoodInfoDO {
     @Column(name = "t_order")
     private Integer order;
     //商品类型
-    @OneToOne(targetEntity = GoodTypeDO.class)
-    @JoinColumn(name = "good_type_id", referencedColumnName = "t_id")
+    @ManyToOne(targetEntity = GoodTypeDO.class)
+    @JoinColumn(name = "good_type_id")
     private GoodTypeDO goodTypeDO;
 }

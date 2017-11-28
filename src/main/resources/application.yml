@@ -26,6 +26,11 @@ spring:
       test-on-return: false
       #配置监控统计拦截的filters，去掉后监控界面sql将无法统计,'wall'用于防火墙
       filters: stat, wall, log4j
+      stat-view-servlet:
+        allow: 127.0.0.1
+        login-username: yimeng
+        login-password: 123456
+        reset-enable: false
   jpa:
     database: mysql
     show-sql: true

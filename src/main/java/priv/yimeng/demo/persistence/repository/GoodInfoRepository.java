@@ -14,7 +14,7 @@ import java.util.List;
  * @author yimeng
  * @version 1.0
  */
-public interface GoodRepository extends JpaRepository<GoodInfoDO, Long> {
+public interface GoodInfoRepository extends JpaRepository<GoodInfoDO, Long> {
 
     /**
      * findByGoodTypeId
@@ -22,7 +22,7 @@ public interface GoodRepository extends JpaRepository<GoodInfoDO, Long> {
      * @param id id
      * @return list
      */
-    @Query(value = "select g.id,g.title,g.price,g.order,g.unit from GoodInfoDO g where goodTypeDO.id = :id")
+    @Query(value = "select g from GoodInfoDO g where goodTypeDO.id = :id")
     List<GoodInfoDO> findByGoodTypeId(@Param("id") Long id);
 
 }

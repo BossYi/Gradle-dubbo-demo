@@ -5,7 +5,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import priv.yimeng.demo.persistence.entity.GoodInfoDO;
+import priv.yimeng.demo.persistence.entity.GoodTypeDO;
 import priv.yimeng.demo.service.GoodInfoService;
+import priv.yimeng.demo.service.GoodTypeService;
 
 import java.util.List;
 
@@ -19,16 +21,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/good")
 public class GoodController {
-    private final GoodInfoService goodInfoService;
-
     @Autowired
-    public GoodController(GoodInfoService goodInfoService) {
-        this.goodInfoService = goodInfoService;
-    }
+    private GoodInfoService goodInfoService;
 
     @RequestMapping("/good_type/{id}")
     public List<GoodInfoDO> listByGoodTypeId(@PathVariable Long id) {
         return goodInfoService.listByGoodTypeId(id);
     }
-
 }

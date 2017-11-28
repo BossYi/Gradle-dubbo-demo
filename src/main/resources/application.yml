@@ -4,7 +4,7 @@ spring:
     driver-class-name: com.mysql.jdbc.Driver
     url: jdbc:mysql://127.0.0.1:3306/gradle-demo?characterEncoding=utf8
     username: root
-    password: yimeng1314
+    password: root
     druid:
       #最大活跃数
       max-active: 20

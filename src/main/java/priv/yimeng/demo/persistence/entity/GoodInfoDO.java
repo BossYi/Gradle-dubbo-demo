@@ -1,5 +1,6 @@
 package priv.yimeng.demo.persistence.entity;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -34,7 +35,8 @@ class GoodInfoDO {
     @Column(name = "t_order")
     private Integer order;
     //商品类型
-    @ManyToOne(targetEntity = GoodTypeDO.class)
+    @JSONField(serialize=false)
+    @ManyToOne(targetEntity = GoodTypeDO.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "good_type_id")
     private GoodTypeDO goodTypeDO;
 }

@@ -3,7 +3,8 @@ package priv.yimeng.demo.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import priv.yimeng.demo.persistence.entity.GoodInfoDO;
-import priv.yimeng.demo.persistence.repository.GoodRepository;
+import priv.yimeng.demo.persistence.entity.GoodTypeDO;
+import priv.yimeng.demo.persistence.repository.GoodInfoRepository;
 import priv.yimeng.demo.service.GoodInfoService;
 
 import java.util.List;
@@ -18,15 +19,16 @@ import java.util.List;
 @Service
 public class GoodInfoServiceImpl implements GoodInfoService {
 
-    private final GoodRepository goodRepository;
+    private final GoodInfoRepository goodInfoRepository;
 
     @Autowired
-    public GoodInfoServiceImpl(GoodRepository goodRepository) {
-        this.goodRepository = goodRepository;
+    public GoodInfoServiceImpl(GoodInfoRepository goodInfoRepository) {
+        this.goodInfoRepository = goodInfoRepository;
     }
 
     @Override
     public List<GoodInfoDO> listByGoodTypeId(Long id) {
-        return goodRepository.findByGoodTypeId(id);
+        return goodInfoRepository.findByGoodTypeId(id);
     }
+
 }

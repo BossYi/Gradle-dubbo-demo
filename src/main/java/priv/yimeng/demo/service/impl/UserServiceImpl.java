@@ -35,4 +35,9 @@ public class UserServiceImpl implements UserService {
         userRepository.save(userDO);
     }
 
+    @Override
+    public UserDO findByNameAndAge(String name, Integer age) {
+        return userRepository.findByNameAndAge(name, age);
+    }
+
 }

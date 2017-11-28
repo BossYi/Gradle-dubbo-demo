@@ -26,4 +26,13 @@ public interface UserService {
      * @param userDO 用户DO
      */
     void save(UserDO userDO);
+
+    /**
+     * 根据用户和年龄查询
+     *
+     * @param name name
+     * @param age  age
+     * @return user
+     */
+    UserDO findByNameAndAge(String name, Integer age);
 }

@@ -29,7 +29,8 @@ spring:
   jpa:
     database: mysql
     show-sql: true
-    generate-ddl: true
+    hibernate:
+      ddl-auto: update
   devtools:
     restart:
       exclude: static/**,templates/**

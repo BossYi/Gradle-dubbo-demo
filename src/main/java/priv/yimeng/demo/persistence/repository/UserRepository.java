@@ -1,7 +1,6 @@
 package priv.yimeng.demo.persistence.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import priv.yimeng.demo.persistence.entity.UserDO;
 
 import java.io.Serializable;
@@ -13,5 +12,15 @@ import java.io.Serializable;
  * @author yimeng
  * @version 1.0
  */
-public interface UserRepository extends JpaRepository<UserDO, Long>, JpaSpecificationExecutor<UserDO>, Serializable {
+public interface UserRepository extends JpaRepository<UserDO, Long>, Serializable {
+
+    /**
+     * 根据用户和年龄查询
+     *
+     * @param name name
+     * @param age  age
+     * @return user
+     */
+    UserDO findByNameAndAge(String name, Integer age);
+
 }

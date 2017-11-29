@@ -23,4 +23,12 @@ public interface UserRepository extends JpaRepository<UserDO, Long>, Serializabl
      */
     UserDO findByNameAndAge(String name, Integer age);
 
+    /**
+     * 通过用户和面密码查找
+     *
+     * @param username name
+     * @param password pwd
+     * @return user
+     */
+    UserDO findByNameAndPassword(String username, String password);
 }

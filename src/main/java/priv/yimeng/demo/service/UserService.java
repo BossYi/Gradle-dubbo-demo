@@ -35,4 +35,21 @@ public interface UserService {
      * @return user
      */
     UserDO findByNameAndAge(String name, Integer age);
+
+    /**
+     * 查询单个用户
+     *
+     * @param id id
+     * @return user
+     */
+    UserDO findOne(Long id);
+
+    /**
+     * 通过用户和面密码查找
+     *
+     * @param username name
+     * @param password pwd
+     * @return user
+     */
+    UserDO findByNameAndPassword(String username, String password);
 }

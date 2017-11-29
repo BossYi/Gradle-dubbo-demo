@@ -10,10 +10,11 @@ import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
 import javax.annotation.PostConstruct;
 
 /**
- * Desc:
- * Author: yimeng
- * Date:  2017-10-04
- * Time:   14:04
+ * Description: ${DESCRIPTION}
+ * CreateDate:  2017-11-29
+ *
+ * @author yimeng
+ * @version 1.0
  */
 @Configuration
 public class FreeMarkerWebConfiguration extends WebMvcConfigurerAdapter {

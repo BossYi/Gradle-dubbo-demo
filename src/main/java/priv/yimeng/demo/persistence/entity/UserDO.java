@@ -31,4 +31,7 @@ class UserDO implements Serializable {
     @Column(name = "t_address")
     private String address;
 
+    @Column(name = "t_password")
+    private String password;
+
 }

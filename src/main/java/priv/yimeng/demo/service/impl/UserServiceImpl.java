@@ -40,4 +40,14 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByNameAndAge(name, age);
     }
 
+    @Override
+    public UserDO findOne(Long id) {
+        return userRepository.findOne(id);
+    }
+
+    @Override
+    public UserDO findByNameAndPassword(String username, String password) {
+        return userRepository.findByNameAndPassword(username, password);
+    }
+
 }

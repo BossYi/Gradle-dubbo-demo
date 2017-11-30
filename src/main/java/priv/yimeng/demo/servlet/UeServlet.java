@@ -24,9 +24,14 @@ public class UeServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String rootPath = req.getServletContext().getRealPath("/");
         String configFileName = UeServlet.class.getClassLoader().getResource("config.json").getPath();
-        PrintWriter writer = resp.getWriter();
-        resp.setCharacterEncoding("UTF-8");
-        writer.write(new ActionEnter(req, rootPath, configFileName).exec());
+
+        try (PrintWriter writer = resp.getWriter()) {
+            resp.setCharacterEncoding("UTF-8");
+            writer.write(new ActionEnter(req, rootPath, configFileName).exec());
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("ueditor加载失败！");
+        }
     }
 
     @Override

@@ -43,6 +43,8 @@ dependencies {
     compile "org.springframework.boot:spring-boot-starter-web"
     compile "org.springframework.boot:spring-boot-starter-freemarker"
     compile "org.springframework.boot:spring-boot-devtools"
+    compile "cn.songxinqiang:com.baidu.ueditor:1.1.2-edit-1.0"
+
 
     compile "com.alibaba:druid-spring-boot-starter:${druidVersion}"
     compile "com.alibaba:fastjson:${fastjsonVersion}"

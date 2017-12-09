@@ -2,6 +2,7 @@ package priv.yimeng.demo.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import priv.yimeng.demo.persistence.entity.UserDO;
 import priv.yimeng.demo.persistence.repository.UserRepository;
 import priv.yimeng.demo.service.UserService;
@@ -36,18 +37,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDO findByNameAndAge(String name, Integer age) {
-        return userRepository.findByNameAndAge(name, age);
-    }
-
-    @Override
     public UserDO findOne(Long id) {
         return userRepository.findOne(id);
     }
 
     @Override
-    public UserDO findByNameAndPassword(String username, String password) {
-        return userRepository.findByNameAndPassword(username, password);
+    public UserDO findByUsernameCaseInsenstive(String username) {
+        return userRepository.findByUsernameCaseInsenstive(username);
     }
 
 }

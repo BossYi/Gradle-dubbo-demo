@@ -29,7 +29,7 @@ public class LoginController {
         this.userService = userService;
     }
 
-    @RequestMapping("/login_view")
+    @RequestMapping("/login")
     public String loginView() {
 
         log.debug("记录debug日志");
@@ -39,7 +39,7 @@ public class LoginController {
         return "login";
     }
 
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
+/*    @RequestMapping(value = "/login", method = RequestMethod.POST)
     public @ResponseBody
     String login(String username, String password, HttpServletRequest request) {
         log.info(username + ": " + password);
@@ -51,7 +51,7 @@ public class LoginController {
         }
 
         return "username or password incorrect!";
-    }
+    }*/
 
 }
 

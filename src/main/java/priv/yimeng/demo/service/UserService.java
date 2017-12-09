@@ -28,15 +28,6 @@ public interface UserService {
     void save(UserDO userDO);
 
     /**
-     * 根据用户和年龄查询
-     *
-     * @param name name
-     * @param age  age
-     * @return user
-     */
-    UserDO findByNameAndAge(String name, Integer age);
-
-    /**
      * 查询单个用户
      *
      * @param id id
@@ -45,11 +36,9 @@ public interface UserService {
     UserDO findOne(Long id);
 
     /**
-     * 通过用户和面密码查找
+     * 查找用户
      *
-     * @param username name
-     * @param password pwd
-     * @return user
+     * @return userDO
      */
-    UserDO findByNameAndPassword(String username, String password);
+    UserDO findByUsernameCaseInsenstive(String username);
 }

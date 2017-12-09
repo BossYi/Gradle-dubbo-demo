@@ -16,7 +16,6 @@ import priv.yimeng.demo.interceptor.SessionInterceptor;
  * @version 1.0
  */
 @Configuration
-@ConditionalOnClass
 public class CommonWebMvcConfiguration extends WebMvcConfigurerAdapter {
 
     private final FreeMarkerViewResolver freeMarkerViewResolver;
@@ -39,8 +38,8 @@ public class CommonWebMvcConfiguration extends WebMvcConfigurerAdapter {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new SessionInterceptor()).addPathPatterns("/**");
-        registry.addInterceptor(new LogInterceptor()).addPathPatterns("/**");
+        //registry.addInterceptor(new SessionInterceptor()).addPathPatterns("/**");
+        //registry.addInterceptor(new LogInterceptor()).addPathPatterns("/**");
         super.addInterceptors(registry);
     }
 

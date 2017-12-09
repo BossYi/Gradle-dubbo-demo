@@ -43,9 +43,4 @@ public class UserController {
         userService.save(userDO);
     }
 
-    @RequestMapping("/find/{name}/{age}")
-    public UserDO findByNameAndAge(@PathVariable String name, @PathVariable Integer age) {
-        return userService.findByNameAndAge(name, age);
-    }
-
 }

@@ -1,6 +1,8 @@
 package priv.yimeng.demo.persistence.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import priv.yimeng.demo.persistence.entity.UserDO;
 
 import java.io.Serializable;
@@ -15,20 +17,12 @@ import java.io.Serializable;
 public interface UserRepository extends JpaRepository<UserDO, Long>, Serializable {
 
     /**
-     * 根据用户和年龄查询
+     * 查找用户
      *
-     * @param name name
-     * @param age  age
+     * @param username username
      * @return user
      */
-    UserDO findByNameAndAge(String name, Integer age);
+    @Query("select u from UserDO u where LOWER(u.username) = LOWER(:username)")
+    UserDO findByUsernameCaseInsenstive(@Param("username") String username);
 
-    /**
-     * 通过用户和面密码查找
-     *
-     * @param username name
-     * @param password pwd
-     * @return user
-     */
-    UserDO findByNameAndPassword(String username, String password);
 }

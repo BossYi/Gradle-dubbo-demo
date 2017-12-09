@@ -1,9 +1,13 @@
 package priv.yimeng.demo.persistence.entity;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
+import org.hibernate.validator.constraints.Email;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.Set;
 
 /**
  * Description: ${DESCRIPTION}
@@ -18,20 +22,33 @@ public @Data
 class UserDO implements Serializable {
 
     @Id
-    @GeneratedValue
-    @Column(name = "t_id")
-    private Long id;
+    @Column(updatable = false, nullable = false)
+    @Size(max = 50)
+    private String username;
 
-    @Column(name = "t_name")
-    private String name;
-
-    @Column(name = "t_age")
-    private Integer age;
-
-    @Column(name = "t_address")
-    private String address;
-
-    @Column(name = "t_password")
+    @Size(max = 500)
     private String password;
+
+    @Email
+    @Size(max = 50)
+    private String email;
+
+    private Boolean activated;
+
+    @Size(max = 100)
+    @Column(name = "activationKey")
+    private String activationKey;
+
+    @Size(max = 100)
+    @Column(name = "resetPasswordKey")
+    private String resetPasswordKey;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "user_authority",
+            joinColumns = @JoinColumn(name = "username"),
+            inverseJoinColumns = @JoinColumn(name = "authority"))
+    @JSONField(serialize = false)
+    private Set<AuthorityDO> authorities;
 
 }

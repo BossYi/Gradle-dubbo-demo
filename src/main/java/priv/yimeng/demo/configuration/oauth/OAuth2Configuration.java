@@ -55,6 +55,7 @@ public class OAuth2Configuration {
                     .logout()
                     .logoutUrl("/oauth/logout")
                     .logoutSuccessHandler(customLogoutSuccessHandler)
+                    .permitAll()
                     .and()
                     .authorizeRequests()
                     .antMatchers("/hello").permitAll()

@@ -26,6 +26,11 @@ public class IndexController {
     public String home() {
         return "hello";
     }
+
+    @RequestMapping("/logout")
+    public String logout() {
+        return "/login";
+    }
 }
 
 

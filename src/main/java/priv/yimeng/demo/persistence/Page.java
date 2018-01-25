@@ -1,6 +1,6 @@
 package priv.yimeng.demo.persistence;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Getter;
 import priv.yimeng.demo.persistence.Order.Direction;
 
@@ -113,7 +113,7 @@ public class Page<T> implements Serializable {
      *
      * @return 排序
      */
-    @JsonIgnore
+    @JSONField(serialize = false)
     public List<Order> getOrders() {
         return pageable.getOrders();
     }
@@ -123,7 +123,7 @@ public class Page<T> implements Serializable {
      *
      * @return 筛选
      */
-    @JsonIgnore
+    @JSONField(serialize = false)
     public List<Filter> getFilters() {
         return pageable.getFilters();
     }

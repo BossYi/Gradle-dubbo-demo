@@ -2,7 +2,7 @@ package priv.yimeng.demo.persistence.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.NoRepositoryBean;
-import priv.yimeng.demo.persistence.entity.UserDO;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
 
@@ -13,14 +13,14 @@ import java.io.Serializable;
  * @date 2018-01-24
  */
 @NoRepositoryBean
+@Transactional(readOnly = true, rollbackFor = Exception.class)
 public interface BaseRepository<T, ID extends Serializable> extends JpaRepository<T, ID> {
 
     /**
-     * findByUsername
-     *
-     * @param username name
-     * @return userDo
+     * 持久化
      */
-    UserDO findByUsername(String username);
+    void persist(T t);
+
+    T getOneObject(ID username);
 
 }

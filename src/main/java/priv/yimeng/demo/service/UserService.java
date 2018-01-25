@@ -30,10 +30,10 @@ public interface UserService {
     /**
      * 查询单个用户
      *
-     * @param id id
+     * @param username username
      * @return user
      */
-    UserDO findOne(Long id);
+    UserDO findOne(String username);
 
     /**
      * 查找用户

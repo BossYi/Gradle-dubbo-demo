@@ -1,13 +1,14 @@
 package priv.yimeng.demo.persistence.entity;
 
-import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 import org.hibernate.validator.constraints.Email;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.util.Set;
 
 /**
  * Description: ${DESCRIPTION}
@@ -36,19 +37,7 @@ class UserDO implements Serializable {
     private Boolean activated;
 
     @Size(max = 100)
-    @Column(name = "activationKey")
-    private String activationKey;
-
-    @Size(max = 100)
     @Column(name = "resetPasswordKey")
     private String resetPasswordKey;
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "user_authority",
-            joinColumns = @JoinColumn(name = "username"),
-            inverseJoinColumns = @JoinColumn(name = "authority"))
-    @JSONField(serialize = false)
-    private Set<AuthorityDO> authorities;
 
 }

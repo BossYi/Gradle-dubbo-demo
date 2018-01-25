@@ -1,6 +1,5 @@
 package priv.yimeng.demo.persistence.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import priv.yimeng.demo.persistence.entity.UserDO;
@@ -14,7 +13,7 @@ import java.io.Serializable;
  * @author yimeng
  * @version 1.0
  */
-public interface UserRepository extends JpaRepository<UserDO, Long>, Serializable {
+public interface UserRepository extends BaseRepository<UserDO, String>, Serializable {
 
     /**
      * 查找用户

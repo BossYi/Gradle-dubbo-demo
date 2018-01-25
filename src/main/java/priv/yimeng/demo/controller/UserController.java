@@ -1,7 +1,10 @@
 package priv.yimeng.demo.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 import priv.yimeng.demo.persistence.entity.UserDO;
 import priv.yimeng.demo.service.UserService;
 
@@ -36,7 +39,7 @@ public class UserController {
     }
 
     /**
-     * 查询所有学生
+     * save学生
      */
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     public void save(@RequestBody UserDO userDO) {

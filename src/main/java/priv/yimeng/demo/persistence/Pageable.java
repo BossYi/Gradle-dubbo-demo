@@ -1,7 +1,5 @@
 package priv.yimeng.demo.persistence;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import priv.yimeng.demo.persistence.Filter.Operator;
@@ -17,7 +15,6 @@ import java.util.List;
  * @author yeliangqin
  * @version 3.0
  */
-@JsonAutoDetect(fieldVisibility = Visibility.NONE, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE, isGetterVisibility = Visibility.NONE, creatorVisibility = Visibility.NONE)
 public class Pageable implements Serializable {
 
     private static final long serialVersionUID = -3930180379790344299L;

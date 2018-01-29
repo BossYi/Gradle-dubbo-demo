@@ -37,8 +37,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDO findOne(Long id) {
-        return userRepository.findOne(id);
+    public UserDO findOne(String username) {
+        return userRepository.findOne(username);
     }
 
     @Override

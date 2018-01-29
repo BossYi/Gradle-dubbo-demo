@@ -2,10 +2,13 @@ package priv.yimeng.demo.persistence.repository.impl;
 
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.util.Assert;
+import priv.yimeng.demo.persistence.Filter;
+import priv.yimeng.demo.persistence.Order;
 import priv.yimeng.demo.persistence.repository.BaseRepository;
 
 import javax.persistence.EntityManager;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Description: ${DESCRIPTION}
@@ -34,5 +37,15 @@ public class BaseRepositoryImpl<T, ID extends Serializable> extends SimpleJpaRep
     @Override
     public T getOneObject(ID id) {
         return em.find(domainClass, id);
+    }
+
+    @Override
+    public List<T> list(Filter... filters) {
+        return null;
+    }
+
+    @Override
+    public List<T> list(Integer first, Integer count, List<Filter> filters, List<Order> orders) {
+        return null;
     }
 }

@@ -12,6 +12,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
 import javax.persistence.criteria.CriteriaQuery;
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -39,12 +40,12 @@ public class BaseRepositoryImpl<T, ID extends Serializable> extends SimpleJpaRep
 
     @Override
     public List<T> list(Filter... filters) {
-        return null;
+        return list(null, null, filters != null ? Arrays.asList(filters) : null, null);
     }
 
     @Override
     public List<T> list(Integer first, Integer count, List<Filter> filters, List<Order> orders) {
-        return null;
+        return list(null, first, count, filters, orders);
     }
 
     @Override

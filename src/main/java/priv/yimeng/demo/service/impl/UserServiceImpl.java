@@ -2,7 +2,6 @@ package priv.yimeng.demo.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import priv.yimeng.demo.persistence.entity.UserDO;
 import priv.yimeng.demo.persistence.repository.UserRepository;
 import priv.yimeng.demo.service.UserService;
@@ -37,8 +36,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDO findOne(Long id) {
-        return userRepository.findOne(id);
+    public UserDO findOne(String username) {
+        return userRepository.findOne(username);
     }
 
     @Override

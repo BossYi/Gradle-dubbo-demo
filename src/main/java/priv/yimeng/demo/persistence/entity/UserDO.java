@@ -21,6 +21,8 @@ import java.util.Set;
 public @Data
 class UserDO implements Serializable {
 
+    private static final long serialVersionUID = -1696091784929073089L;
+
     @Id
     @Column(updatable = false, nullable = false)
     @Size(max = 50)

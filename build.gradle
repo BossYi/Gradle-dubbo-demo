@@ -42,8 +42,6 @@ dependencies {
     compile "org.springframework.boot:spring-boot-starter-jdbc"
     compile "org.springframework.boot:spring-boot-starter-web"
     compile "org.springframework.boot:spring-boot-starter-freemarker"
-    compile "org.springframework.boot:spring-boot-starter-security"
-    compile "org.springframework.security.oauth:spring-security-oauth2"
     compile "cn.songxinqiang:com.baidu.ueditor:1.1.2-edit-1.0"
     compile 'org.apache.commons:commons-lang3:3.7'
     compile 'org.projectlombok:lombok:1.16.20'
@@ -53,6 +51,5 @@ dependencies {
     compile "com.alibaba:fastjson:${fastjsonVersion}"
     compile "mysql:mysql-connector-java"
 
-    compileOnly "org.projectlombok:lombok"
     testCompile "org.springframework.boot:spring-boot-starter-test"
 }

@@ -1,5 +1,6 @@
 package priv.yimeng.demo.persistence.repository.impl;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.util.Assert;
 import priv.yimeng.demo.persistence.Filter;
@@ -10,6 +11,7 @@ import priv.yimeng.demo.persistence.repository.BaseRepository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import java.io.Serializable;
 import java.util.Arrays;
@@ -25,17 +27,17 @@ import java.util.List;
 public class BaseRepositoryImpl<T, ID extends Serializable> extends SimpleJpaRepository<T, ID> implements BaseRepository<T, ID> {
 
     private final Class<T> domainClass;
-    private final EntityManager em;
+    private final EntityManager entityManager;
 
-    public BaseRepositoryImpl(Class<T> domainClass, EntityManager em) {
-        super(domainClass, em);
+    public BaseRepositoryImpl(Class<T> domainClass, EntityManager entityManager) {
+        super(domainClass, entityManager);
         this.domainClass = domainClass;
-        this.em = em;
+        this.entityManager = entityManager;
     }
 
     @Override
     public T getOneObject(ID id) {
-        return em.find(domainClass, id);
+        return entityManager.find(domainClass, id);
     }
 
     @Override
@@ -50,7 +52,16 @@ public class BaseRepositoryImpl<T, ID extends Serializable> extends SimpleJpaRep
 
     @Override
     public List<T> list(String querySelectName, Integer first, Integer count, List<Filter> filters, List<Order> orders) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<T> query = criteriaBuilder.createQuery(domainClass);
+        if (StringUtils.isNotEmpty(querySelectName)) {
+            buildQuerySelect(querySelectName, query);
+        }
         return null;
+    }
+
+    private void buildQuerySelect(String querySelectName, CriteriaQuery<T> query) {
+
     }
 
     @Override
@@ -71,7 +82,7 @@ public class BaseRepositoryImpl<T, ID extends Serializable> extends SimpleJpaRep
     @Override
     public void persist(T entity) {
         Assert.notNull(entity, "null");
-        em.persist(entity);
+        entityManager.persist(entity);
     }
 
     @Override

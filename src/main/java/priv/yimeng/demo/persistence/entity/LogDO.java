@@ -3,6 +3,7 @@ package priv.yimeng.demo.persistence.entity;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.sql.Timestamp;
 
 /**
@@ -15,8 +16,9 @@ import java.sql.Timestamp;
 @Entity
 @Table(name = "ci_log")
 public @Data
-class LogDO {
+class LogDO implements Serializable {
 
+    private static final long serialVersionUID = -6353147869679311087L;
 
     /**
      * 编号

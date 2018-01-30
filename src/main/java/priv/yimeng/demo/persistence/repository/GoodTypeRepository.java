@@ -1,6 +1,5 @@
 package priv.yimeng.demo.persistence.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
 import priv.yimeng.demo.persistence.entity.GoodTypeDO;
 
 /**
@@ -9,5 +8,5 @@ import priv.yimeng.demo.persistence.entity.GoodTypeDO;
  * Date:    2017-11-28
  * Time:    22:53
  */
-public interface GoodTypeRepository extends JpaRepository<GoodTypeDO, Long> {
+public interface GoodTypeRepository extends BaseRepository<GoodTypeDO, Long> {
 }

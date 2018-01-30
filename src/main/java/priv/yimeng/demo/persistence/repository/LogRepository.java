@@ -1,6 +1,5 @@
 package priv.yimeng.demo.persistence.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
 import priv.yimeng.demo.persistence.entity.LogDO;
 
 /**
@@ -10,5 +9,5 @@ import priv.yimeng.demo.persistence.entity.LogDO;
  * @author yimeng
  * @version 1.0
  */
-public interface LogRepository extends JpaRepository<LogDO, Long> {
+public interface LogRepository extends BaseRepository<LogDO, Long> {
 }

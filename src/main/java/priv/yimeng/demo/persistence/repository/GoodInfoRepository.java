@@ -2,7 +2,7 @@ package priv.yimeng.demo.persistence.repository;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import priv.yimeng.demo.persistence.entity.GoodInfoDO;
+import priv.yimeng.demo.persistence.domain.GoodInfoDO;
 
 import java.util.List;
 

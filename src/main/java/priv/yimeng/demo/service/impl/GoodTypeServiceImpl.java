@@ -2,7 +2,7 @@ package priv.yimeng.demo.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import priv.yimeng.demo.persistence.entity.GoodTypeDO;
+import priv.yimeng.demo.persistence.domain.GoodTypeDO;
 import priv.yimeng.demo.persistence.repository.GoodTypeRepository;
 import priv.yimeng.demo.service.GoodTypeService;
 

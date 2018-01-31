@@ -1,6 +1,5 @@
-package priv.yimeng.demo.persistence.entity;
+package priv.yimeng.demo.persistence.domain;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import javax.persistence.Entity;

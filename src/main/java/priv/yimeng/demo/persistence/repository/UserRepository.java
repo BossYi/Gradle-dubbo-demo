@@ -2,7 +2,7 @@ package priv.yimeng.demo.persistence.repository;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import priv.yimeng.demo.persistence.entity.UserDO;
+import priv.yimeng.demo.persistence.domain.UserDO;
 
 import java.io.Serializable;
 

@@ -1,6 +1,6 @@
 package priv.yimeng.demo.service;
 
-import priv.yimeng.demo.persistence.entity.UserDO;
+import priv.yimeng.demo.persistence.domain.UserDO;
 
 import java.util.List;
 

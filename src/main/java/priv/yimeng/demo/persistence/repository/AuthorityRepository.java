@@ -1,6 +1,6 @@
 package priv.yimeng.demo.persistence.repository;
 
-import priv.yimeng.demo.persistence.entity.AuthorityDO;
+import priv.yimeng.demo.persistence.domain.AuthorityDO;
 
 /**
  * Desc

@@ -1,6 +1,6 @@
 package priv.yimeng.demo.persistence.repository;
 
-import priv.yimeng.demo.persistence.entity.GoodTypeDO;
+import priv.yimeng.demo.persistence.domain.GoodTypeDO;
 
 /**
  * Desc:

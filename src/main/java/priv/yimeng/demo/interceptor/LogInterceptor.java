@@ -7,7 +7,7 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
-import priv.yimeng.demo.persistence.entity.LogDO;
+import priv.yimeng.demo.persistence.domain.LogDO;
 import priv.yimeng.demo.service.LogService;
 import priv.yimeng.demo.utils.LogUtil;
 

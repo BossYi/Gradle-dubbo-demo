@@ -1,4 +1,4 @@
-package priv.yimeng.demo.persistence.entity;
+package priv.yimeng.demo.persistence.domain;
 
 /**
  * Desc

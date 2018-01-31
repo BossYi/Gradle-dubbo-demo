@@ -2,7 +2,7 @@ package priv.yimeng.demo.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import priv.yimeng.demo.persistence.entity.UserDO;
+import priv.yimeng.demo.persistence.domain.UserDO;
 import priv.yimeng.demo.persistence.repository.UserRepository;
 import priv.yimeng.demo.service.UserService;
 

@@ -1,7 +1,6 @@
 package priv.yimeng.demo.service;
 
-import priv.yimeng.demo.persistence.entity.GoodInfoDO;
-import priv.yimeng.demo.persistence.entity.GoodTypeDO;
+import priv.yimeng.demo.persistence.domain.GoodInfoDO;
 
 import java.util.List;
 

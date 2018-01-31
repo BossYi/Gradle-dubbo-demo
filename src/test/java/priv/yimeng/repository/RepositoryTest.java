@@ -8,7 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import priv.yimeng.demo.persistence.entity.UserDO;
+import priv.yimeng.demo.persistence.domain.UserDO;
 import priv.yimeng.demo.service.UserService;
 
 import java.util.HashMap;

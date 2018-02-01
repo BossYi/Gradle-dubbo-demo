@@ -2,6 +2,7 @@ package priv.yimeng.demo.persistence.domain;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 
@@ -12,16 +13,14 @@ import javax.persistence.*;
  * @author yimeng
  * @version 1.0
  */
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "good_info")
 public @Data
-class GoodInfoDO {
+class GoodInfoDO extends BaseDO<Long> {
 
-    //主键
-    @Id
-    @GeneratedValue
-    @Column(name = "t_id")
-    private Long id;
+    private static final long serialVersionUID = 6977673057451064563L;
+
     //商品标题
     @Column(name = "t_title")
     private String title;
@@ -35,7 +34,7 @@ class GoodInfoDO {
     @Column(name = "t_order")
     private Integer order;
     //商品类型
-    @JSONField(serialize=false)
+    @JSONField(serialize = false)
     @ManyToOne(targetEntity = GoodTypeDO.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "good_type_id")
     private GoodTypeDO goodTypeDO;

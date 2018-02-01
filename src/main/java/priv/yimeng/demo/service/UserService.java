@@ -2,8 +2,6 @@ package priv.yimeng.demo.service;
 
 import priv.yimeng.demo.persistence.domain.UserDO;
 
-import java.util.List;
-
 /**
  * Description: ${DESCRIPTION}
  * CreateDate:  2017-11-28
@@ -11,14 +9,7 @@ import java.util.List;
  * @author yimeng
  * @version 1.0
  */
-public interface UserService {
-
-    /**
-     * 查询所有学生
-     *
-     * @return list
-     */
-    List<UserDO> list();
+public interface UserService extends BaseService<UserDO, Long> {
 
     /**
      * 保存

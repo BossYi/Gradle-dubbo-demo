@@ -2,6 +2,7 @@ package priv.yimeng.demo.persistence.domain;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.hibernate.validator.constraints.Email;
 
 import javax.persistence.*;
@@ -16,12 +17,12 @@ import java.util.Set;
  * @author yimeng
  * @version 1.0
  */
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "user")
-public @Data
-class UserDO implements Serializable {
-
-    private static final long serialVersionUID = -1696091784929073089L;
+@Data
+public class UserDO extends BaseDO<Long> implements Serializable {
+    private static final long serialVersionUID = -8035876376127995860L;
 
     @Id
     @Column(updatable = false, nullable = false)

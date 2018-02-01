@@ -1,8 +1,10 @@
 package priv.yimeng.demo.persistence.domain;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Set;
 
 /**
@@ -12,23 +14,26 @@ import java.util.Set;
  * @author yimeng
  * @version 1.0
  */
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "good_type")
 public @Data
-class GoodTypeDO {
+class GoodTypeDO extends BaseDO<Long> implements Serializable {
 
-    //主键
-    @Id
-    @GeneratedValue
-    @Column(name = "t_id")
-    private Long id;
-    //类型名称
+    private static final long serialVersionUID = 7880468187445980944L;
+    /**
+     * 类型名称
+     */
     @Column(name = "t_name")
     private String name;
-    //是否显示
+    /**
+     * 是否显示
+     */
     @Column(name = "t_show")
     private Integer show;
-    //排序
+    /**
+     * 排序
+     */
     @Column(name = "t_order")
     private Integer order;
 

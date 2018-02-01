@@ -16,13 +16,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.FlushModeType;
 import javax.persistence.LockModeType;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
 import java.io.Serializable;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Description: ${DESCRIPTION}
@@ -32,6 +28,16 @@ import java.util.Set;
  * @version 1.0
  */
 public class BaseRepositoryImpl<T, ID extends Serializable> extends SimpleJpaRepository<T, ID> implements BaseRepository<T, ID> {
+
+    /**
+     * SQL通配转义符
+     */
+    private static final char SQL_LIKE_ESCAPE = '/';
+
+    /**
+     * 属性分割符
+     */
+    private static final String PROPERTY_SEPARATOR = ".";
 
     private final Class<T> domainClass;
     private final EntityManager entityManager;
@@ -121,10 +127,189 @@ public class BaseRepositoryImpl<T, ID extends Serializable> extends SimpleJpaRep
 
 
     private void addRestrictions(CriteriaQuery<T> criteriaQuery, List<Filter> filters) {
-
+        if (criteriaQuery == null || filters == null || filters.isEmpty()) {
+            return;
+        }
+        Root<T> root = getRoot(criteriaQuery);
+        if (root == null) {
+            return;
+        }
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        Predicate predicate = criteriaQuery.getRestriction() != null ? criteriaQuery.getRestriction() : criteriaBuilder.conjunction();
+        predicate = addFilters(filters, root, criteriaBuilder, predicate);
+        criteriaQuery.where(predicate);
     }
 
+    /**
+     * filters {@link Filter}转化为{@link CriteriaQuery}的{@link Predicate}
+     *
+     * @param filters         filterList 筛选条件
+     * @param root            root
+     * @param criteriaBuilder criteriaBuilder
+     * @param predicate       构造条件
+     * @return predicate
+     */
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    private Predicate addFilters(List<Filter> filters, Root<T> root, CriteriaBuilder criteriaBuilder, Predicate predicate) {
+        for (Filter filter : filters) {
+            if (filter == null || StringUtils.isEmpty(filter.getProperty())) {
+                throw new NullPointerException("the filter or property for filter must not null!");
+            }
+            String[] properties = StringUtils.split(filter.getProperty(), ",");
+            Path[] paths = new Path[properties.length];
+            for (int i = 0; i < properties.length; i++) {
+                String property = properties[i];
+                String[] tempPaths = StringUtils.split(property, PROPERTY_SEPARATOR);
+                From<?, ?> from = root;
+                // 存在 property = "A.b"的情况，使用连接查询
+                for (int j = 0; j < tempPaths.length - 1; j++) {
+                    from = getJoin(from, tempPaths[j]);
+                }
+                paths[i] = from.get(tempPaths[tempPaths.length - 1]);
+            }
+            if (filter.getOperator() == Filter.Operator.isNull) {
+                predicate = criteriaBuilder.and(predicate, paths[0].isNull());
+            } else if (filter.getOperator() == Filter.Operator.isNotNull) {
+                predicate = criteriaBuilder.and(predicate, paths[0].isNotNull());
+            } else if (filter.getValue() == null && filter.getOperator() != null) {
+                throw new NullPointerException("the value of filter for " + filter.getProperty() + " must not null!");
+            } else if (filter.getOperator() == Filter.Operator.eq) {
+                if (filter.getIgnoreCase() != null && filter.getIgnoreCase() && filter.getValue() instanceof String) {
+                    predicate = criteriaBuilder.and(predicate,
+                            criteriaBuilder.equal(criteriaBuilder.lower(paths[0]), ((String) filter.getValue()).toLowerCase()));
+                } else {
+                    predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(paths[0], filter.getValue()));
+                }
+            } else if (filter.getOperator() == Filter.Operator.ne) {
+                if (filter.getIgnoreCase() != null && filter.getIgnoreCase() && filter.getValue() instanceof String) {
+                    predicate = criteriaBuilder.and(predicate,
+                            criteriaBuilder.notEqual(criteriaBuilder.lower(paths[0]), ((String) filter.getValue()).toLowerCase()));
+                } else {
+                    predicate = criteriaBuilder.and(predicate, criteriaBuilder.notEqual(paths[0], filter.getValue()));
+                }
+            } else if (filter.getOperator() == Filter.Operator.gt) {
+                if (filter.getValue() instanceof Number) {
+                    predicate = criteriaBuilder.and(predicate,
+                            criteriaBuilder.gt(paths[0], (Number) filter.getValue()));
+                } else {
+                    predicate = criteriaBuilder.and(predicate, criteriaBuilder.greaterThan(paths[0], (Comparable) filter.getValue()));
+                }
+            } else if (filter.getOperator() == Filter.Operator.lt) {
+                if (filter.getValue() instanceof Number) {
+                    predicate = criteriaBuilder.and(predicate,
+                            criteriaBuilder.lt(paths[0], (Number) filter.getValue()));
+                } else {
+                    predicate = criteriaBuilder.and(predicate, criteriaBuilder.lessThan(paths[0], (Comparable) filter.getValue()));
+                }
+            } else if (filter.getOperator() == Filter.Operator.ge) {
+                if (filter.getValue() instanceof Number) {
+                    predicate = criteriaBuilder.and(predicate,
+                            criteriaBuilder.ge(paths[0], (Number) filter.getValue()));
+                } else {
+                    predicate = criteriaBuilder.and(predicate, criteriaBuilder.greaterThanOrEqualTo(paths[0], (Comparable) filter.getValue()));
+                }
+            } else if (filter.getOperator() == Filter.Operator.le) {
+                if (filter.getValue() instanceof Number) {
+                    predicate = criteriaBuilder.and(predicate,
+                            criteriaBuilder.le(paths[0], (Number) filter.getValue()));
+                } else {
+                    predicate = criteriaBuilder.and(predicate, criteriaBuilder.lessThanOrEqualTo(paths[0], (Comparable) filter.getValue()));
+                }
+            } else if (filter.getOperator() == Filter.Operator.like && filter.getValue() instanceof String) {
+                String value = filter.getValue().toString();
+                if (filter.getAutoWildcard()) {
+                    value = escapeSqlLike(value, SQL_LIKE_ESCAPE);
+                    value = "%" + value + "%";
+                }
+                Predicate likePredicate = criteriaBuilder.like(paths[0], value, SQL_LIKE_ESCAPE);
+                for (int i = 1; i < paths.length; i++) {
+                    Predicate temp = criteriaBuilder.like(paths[i], value, SQL_LIKE_ESCAPE);
+                    likePredicate = criteriaBuilder.or(likePredicate, temp);
+                }
+                predicate = criteriaBuilder.and(predicate, likePredicate);
+            } else if (filter.getOperator() == Filter.Operator.in) {
+                Object value = filter.getValue();
+                Predicate in;
+                if (value instanceof Object[]) {
+                    if (((Object[]) value).length == 0) {
+                        throw new IndexOutOfBoundsException("the value of filter for " + filter.getProperty() + " must not empty array!");
+                    }
+                    in = paths[0].in((Object[]) value);
+                } else if (value instanceof Collection) {
+                    if (((Collection) value).size() == 0) {
+                        throw new IndexOutOfBoundsException("the value of filter for " + filter.getProperty() + " must not empty collection!");
+                    }
+                    in = paths[0].in((Collection) value);
+                } else {
+                    in = paths[0].in(value);
+                }
+                predicate = criteriaBuilder.and(predicate, in);
+            }
+        }
+        return predicate;
+    }
+
+    private String escapeSqlLike(String likeSql, char escape) {
+        likeSql = likeSql.replace(escape + "", escape + "" + escape);
+        likeSql = likeSql.replace("%", escape + "%");
+        likeSql = likeSql.replace("_", escape + "_");
+        likeSql = likeSql.replace("[", escape + "[");
+        likeSql = likeSql.replace("]", escape + "]");
+        return likeSql;
+    }
+
+    private <X, Y> Join<Y, ?> getJoin(From<X, Y> from, String tempPath) {
+        Set<Join<Y, ?>> joins = from.getJoins();
+        for (Join<Y, ?> join : joins) {
+            if (tempPath.equals(join.getAttribute().getName())) {
+                return join;
+            }
+        }
+        return from.join(tempPath);
+    }
+
+    private <X, Y> Join<Y, ?> getJoin(From<X, Y> from, String tempPath, JoinType joinType) {
+        Set<Join<Y, ?>> joins = from.getJoins();
+        for (Join<Y, ?> join : joins) {
+            if (tempPath.equals(join.getAttribute().getName())) {
+                return join;
+            }
+        }
+        return from.join(tempPath, joinType);
+    }
+
+    /**
+     * 添加排序
+     *
+     * @param criteriaQuery criteriaQuery
+     * @param orders        排序对象集合
+     */
     private void addOrders(CriteriaQuery<T> criteriaQuery, List<Order> orders) {
+        if (criteriaQuery == null || orders == null || orders.isEmpty()) {
+            return;
+        }
+        Root<T> root = getRoot(criteriaQuery);
+        if (root == null) {
+            return;
+        }
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        List<javax.persistence.criteria.Order> orderList = new ArrayList<>();
+        if (!criteriaQuery.getOrderList().isEmpty()) {
+            orderList.addAll(criteriaQuery.getOrderList());
+        }
+        for (Order order : orders) {
+            Path<T> path = root;
+            for (String property : StringUtils.split(order.getProperty(), PROPERTY_SEPARATOR)) {
+                path = path.get(property);
+            }
+            if (order.getDirection().equals(Order.Direction.asc)) {
+                orderList.add(criteriaBuilder.asc(path));
+            }
+            if (order.getDirection().equals(Order.Direction.desc)) {
+                orderList.add(criteriaBuilder.desc(path));
+            }
+        }
+        criteriaQuery.orderBy(orderList);
     }
 
     @Override

@@ -4,12 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import priv.yimeng.demo.persistence.entity.UserDO;
 import priv.yimeng.demo.service.UserService;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * Description: ${DESCRIPTION}

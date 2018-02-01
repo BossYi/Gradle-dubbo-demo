@@ -6,8 +6,6 @@ import priv.yimeng.demo.persistence.domain.UserDO;
 import priv.yimeng.demo.persistence.repository.UserRepository;
 import priv.yimeng.demo.service.UserService;
 
-import java.util.List;
-
 /**
  * Description: ${DESCRIPTION}
  * CreateDate:  2017-11-28
@@ -16,33 +14,23 @@ import java.util.List;
  * @version 1.0
  */
 @Service
-public class UserServiceImpl implements UserService {
-
-    private final UserRepository userRepository;
+public class UserServiceImpl extends BaseServiceImpl<UserDO, Long> implements UserService {
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
-
-    @Override
-    public List<UserDO> list() {
-        return userRepository.findAll();
-    }
+    private UserRepository repository;
 
     @Override
     public void save(UserDO userDO) {
-        userRepository.save(userDO);
+        repository.save(userDO);
     }
 
     @Override
     public UserDO findOne(String username) {
-        return userRepository.findOne(username);
+        return null;
     }
 
     @Override
     public UserDO findByUsernameCaseInsenstive(String username) {
-        return userRepository.findByUsernameCaseInsenstive(username);
+        return null;
     }
-
 }

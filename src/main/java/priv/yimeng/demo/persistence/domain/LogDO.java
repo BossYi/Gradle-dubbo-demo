@@ -1,8 +1,11 @@
 package priv.yimeng.demo.persistence.domain;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
@@ -13,20 +16,13 @@ import java.sql.Timestamp;
  * @author yimeng
  * @version 1.0
  */
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "ci_log")
 public @Data
-class LogDO implements Serializable {
+class LogDO extends BaseDO<Long> implements Serializable {
 
     private static final long serialVersionUID = -6353147869679311087L;
-
-    /**
-     * 编号
-     */
-    @Id
-    @GeneratedValue
-    @Column(name = "log_id")
-    private Long id;
     /**
      * 客户端请求ip
      */

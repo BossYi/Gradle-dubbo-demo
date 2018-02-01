@@ -1,9 +1,11 @@
 package priv.yimeng.demo.persistence.domain;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 
 import javax.persistence.Column;
+import javax.persistence.MappedSuperclass;
 import javax.validation.constraints.Min;
 import java.io.Serializable;
 
@@ -14,7 +16,9 @@ import java.io.Serializable;
  * @author yimeng
  * @version 1.0
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
+@MappedSuperclass
 public abstract class BaseOrderDO<ID extends Serializable> extends BaseDO<ID> implements Serializable, Comparable<BaseOrderDO<ID>> {
     private static final long serialVersionUID = -4866879967367628058L;
 

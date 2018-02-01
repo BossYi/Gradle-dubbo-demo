@@ -1,6 +1,7 @@
 package priv.yimeng.demo.persistence.domain;
 
 import lombok.Data;
+import priv.yimeng.demo.listener.EntityListener;
 
 import javax.persistence.*;
 import javax.validation.groups.Default;
@@ -16,6 +17,7 @@ import java.util.Date;
  */
 @Data
 @MappedSuperclass
+@EntityListeners(EntityListener.class)
 public abstract class BaseDO<ID extends Serializable> implements Serializable {
     private static final long serialVersionUID = 2348364862900422840L;
 

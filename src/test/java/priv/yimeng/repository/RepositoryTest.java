@@ -8,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import priv.yimeng.demo.persistence.Filter;
 import priv.yimeng.demo.persistence.domain.UserDO;
 import priv.yimeng.demo.service.UserService;
 
@@ -52,6 +53,19 @@ public class RepositoryTest {
     public void testGetOneObject() {
         UserDO user = userService.findOne("yimeng");
         log.info(user.toString());
+    }
+
+    @Test
+    public void saveUser() {
+        UserDO userDO = new UserDO();
+        userDO.setUsername("yimeng");
+        userService.save(userDO);
+    }
+
+    @Test
+    public void testBaseRepositoryList() {
+        List<UserDO> list = userService.list(Filter.eq("username", "yimeng"));
+        System.out.println(list.get(0).getUsername());
     }
 
 }

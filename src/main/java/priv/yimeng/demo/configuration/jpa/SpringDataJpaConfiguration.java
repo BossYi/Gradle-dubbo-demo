@@ -17,7 +17,7 @@ import priv.yimeng.demo.persistence.repository.BaseRepositoryFactoryBean;
         basePackages = "priv.yimeng.demo.persistence.repository",
         repositoryFactoryBeanClass = BaseRepositoryFactoryBean.class
 )
-@EntityScan("priv.yimeng.demo.persistence.entity")
+@EntityScan("priv.yimeng.demo.persistence.domain")
 @ConditionalOnMissingBean(BaseRepositoryFactoryBean.class)
 public class SpringDataJpaConfiguration {
 }

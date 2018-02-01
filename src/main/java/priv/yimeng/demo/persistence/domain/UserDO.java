@@ -24,7 +24,6 @@ import java.util.Set;
 public class UserDO extends BaseDO<Long> implements Serializable {
     private static final long serialVersionUID = -8035876376127995860L;
 
-    @Id
     @Column(updatable = false, nullable = false)
     @Size(max = 50)
     private String username;
@@ -49,8 +48,8 @@ public class UserDO extends BaseDO<Long> implements Serializable {
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "user_authority",
-            joinColumns = @JoinColumn(name = "username"),
-            inverseJoinColumns = @JoinColumn(name = "authority"))
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "authority_id"))
     @JSONField(serialize = false)
     private Set<AuthorityDO> authorities;
 

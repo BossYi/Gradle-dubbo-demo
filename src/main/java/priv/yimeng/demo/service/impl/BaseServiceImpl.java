@@ -1,12 +1,12 @@
 package priv.yimeng.demo.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import priv.yimeng.demo.persistence.Filter;
 import priv.yimeng.demo.persistence.domain.BaseDO;
 import priv.yimeng.demo.persistence.repository.BaseRepository;
 import priv.yimeng.demo.service.BaseService;
 
+import javax.annotation.Resource;
 import java.io.Serializable;
 import java.util.List;
 
@@ -20,7 +20,7 @@ import java.util.List;
 @Transactional(rollbackFor = Exception.class)
 public class BaseServiceImpl<T extends BaseDO<ID>, ID extends Serializable> implements BaseService<T, ID> {
 
-    @Autowired
+    @Resource
     private BaseRepository<T, ID> baseRepository;
 
     @Override

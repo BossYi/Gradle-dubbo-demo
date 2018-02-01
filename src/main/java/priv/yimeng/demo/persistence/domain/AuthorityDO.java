@@ -19,7 +19,7 @@ import java.io.Serializable;
 @Entity
 @Table(name = "authority")
 @Data
-public class AuthorityDO extends BaseDO<String> implements Serializable {
+public class AuthorityDO extends BaseDO<Long> implements Serializable {
     private static final long serialVersionUID = -384700689174503566L;
 
     @NotNull

@@ -53,6 +53,7 @@ public abstract class BaseDO<ID extends Serializable> implements Serializable {
      */
     @Id
     @Access(AccessType.PROPERTY)
+    @SequenceGenerator(name = "sequenceGenerator", sequenceName = "id_sequenceGenerator")
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "sequenceGenerator")
     private ID id;
 

@@ -69,11 +69,13 @@ public class BaseRepositoryImpl<T, ID extends Serializable> extends SimpleJpaRep
     @Override
     public List<T> list(String querySelectName, Integer first, Integer count, List<Filter> filters, List<Order> orders) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<T> query = criteriaBuilder.createQuery(domainClass);
+        CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(domainClass);
         if (StringUtils.isNotEmpty(querySelectName)) {
-            buildQuerySelect(querySelectName, query);
+            buildQuerySelect(querySelectName, criteriaQuery);
+        } else {
+            criteriaQuery.select(criteriaQuery.from(domainClass));
         }
-        return null;
+        return list(criteriaQuery, first, count, filters, orders);
     }
 
     private List<T> list(CriteriaQuery<T> criteriaQuery, Integer first, Integer count, List<Filter> filters, List<Order> orders) {
@@ -122,7 +124,7 @@ public class BaseRepositoryImpl<T, ID extends Serializable> extends SimpleJpaRep
         return null;
     }
 
-    private void buildQuerySelect(String querySelectName, CriteriaQuery<T> query) {
+    private void buildQuerySelect(String querySelectName, CriteriaQuery<T> criteriaQuery) {
     }
 
 

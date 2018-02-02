@@ -6,12 +6,12 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import priv.yimeng.demo.persistence.Filter;
 import priv.yimeng.demo.persistence.domain.UserDO;
 import priv.yimeng.demo.service.UserService;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -35,13 +35,6 @@ public class RepositoryTest {
 
     @Test
     public void testListUser() {
-        ResponseEntity<List> listResponseEntity = testRestTemplate.getForEntity("/user/list", List.class, "");
-        List list = listResponseEntity.getBody();
-        for (Object o : list) {
-            String username = (String) ((HashMap) o).get("username");
-            System.out.println(username);
-        }
-
         List userList = testRestTemplate.getForObject("/user/list", List.class);
         for (Object o : userList) {
             String username = (String) ((HashMap) o).get("username");
@@ -58,7 +51,10 @@ public class RepositoryTest {
     @Test
     public void saveUser() {
         UserDO userDO = new UserDO();
-        userDO.setUsername("yimeng");
+        userDO.setUsername("yimeng" + new Date().getTime());
+        userDO.setEmail("123@163.com");
+        userDO.setActivated(true);
+        userDO.setPassword("123456");
         userService.save(userDO);
     }
 

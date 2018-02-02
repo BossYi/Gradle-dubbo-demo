@@ -16,17 +16,21 @@ import priv.yimeng.demo.service.UserService;
 @Service
 public class UserServiceImpl extends BaseServiceImpl<UserDO, Long> implements UserService {
 
+    private final UserRepository userRepository;
+
     @Autowired
-    private UserRepository repository;
+    public UserServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @Override
     public void save(UserDO userDO) {
-        repository.save(userDO);
+        userRepository.save(userDO);
     }
 
     @Override
     public UserDO findOne(String username) {
-        return null;
+        return userRepository.findByUsername(username);
     }
 
     @Override

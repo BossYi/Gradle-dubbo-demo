@@ -167,6 +167,7 @@ public class BaseRepositoryImpl<T, ID extends Serializable> extends SimpleJpaRep
                 }
                 paths[i] = from.get(tempPaths[tempPaths.length - 1]);
             }
+
             if (filter.getOperator() == Filter.Operator.isNull) {
                 predicate = criteriaBuilder.and(predicate, paths[0].isNull());
             } else if (filter.getOperator() == Filter.Operator.isNotNull) {

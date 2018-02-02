@@ -60,8 +60,16 @@ public class RepositoryTest {
 
     @Test
     public void testBaseRepositoryList() {
-        List<UserDO> list = userService.list(Filter.eq("username", "yimeng"));
+        List<UserDO> list = userService.list(Filter.eq("id", 4));
         System.out.println(list.get(0).getUsername());
+    }
+
+    @Test
+    public void testLe() {
+        List<UserDO> list = userService.list(Filter.le("id", 4L));
+        for (UserDO userDO : list) {
+            System.out.println(userDO.getId());
+        }
     }
 
 }

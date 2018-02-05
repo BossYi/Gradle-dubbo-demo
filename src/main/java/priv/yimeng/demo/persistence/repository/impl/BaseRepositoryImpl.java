@@ -98,7 +98,19 @@ public class BaseRepositoryImpl<T, ID extends Serializable> extends SimpleJpaRep
 
     @Override
     public Page<T> listPage(Pageable pageable) {
-        return null;
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(domainClass);
+        String querySelectName = pageable.getQuerySelectName();
+        if (StringUtils.isNotEmpty(querySelectName)) {
+            if (pageable.getGroupBy()) {
+                buildQuerySelectGroup(querySelectName, criteriaQuery);
+            } else {
+                buildQuerySelect(querySelectName, criteriaQuery);
+            }
+        } else {
+            criteriaQuery.select(criteriaQuery.from(domainClass));
+        }
+        return listPage(criteriaQuery, pageable);
     }
 
     @Override
@@ -230,6 +242,43 @@ public class BaseRepositoryImpl<T, ID extends Serializable> extends SimpleJpaRep
      * @param criteriaQuery   criteriaQuery
      */
     private void buildQuerySelect(String querySelectName, CriteriaQuery<T> criteriaQuery) {
+        CriteriaQuery<T> queryCache = querySelectQueryCaches.get(querySelectName);
+        if (queryCache == null) {
+            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+            queryCache = criteriaBuilder.createQuery(domainClass);
+            String[] parameters = getSelection(querySelectName);
+            Root<T> root = queryCache.from(domainClass);
+            Expression<?>[] selections = new Expression[parameters.length];
+            for (int i = 0; i < parameters.length; i++) {
+                String[] tempPaths = StringUtils.split(parameters[i], PROPERTY_SEPARATOR);
+                From<?, ?> from = root;
+                for (int j = 0; j < tempPaths.length - 1; j++) {
+                    from = getJoin(from, tempPaths[j], JoinType.LEFT);
+                }
+                selections[i] = from.get(tempPaths[tempPaths.length - 1]);
+                if (BaseDO.class.isAssignableFrom(selections[i].getJavaType())) {
+                    getJoin(from, parameters[i], JoinType.LEFT);
+                }
+            }
+            queryCache.multiselect(selections);
+            querySelectQueryCaches.put(querySelectName, queryCache);
+        }
+        Selection<T> selection = queryCache.getSelection();
+        criteriaQuery.select(selection);
+        for (Root<?> root : queryCache.getRoots()) {
+            Root<?> des = criteriaQuery.from(root.getJavaType());
+            des.alias(getAlias(root));
+            copyJoins(root, des);
+        }
+    }
+
+    /**
+     * 构建分组查询select
+     *
+     * @param querySelectName querySelectName
+     * @param criteriaQuery   criteriaQuery
+     */
+    private void buildQuerySelectGroup(String querySelectName, CriteriaQuery<T> criteriaQuery) {
         CriteriaQuery<T> queryCache = querySelectQueryCaches.get(querySelectName);
         if (queryCache == null) {
             CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();

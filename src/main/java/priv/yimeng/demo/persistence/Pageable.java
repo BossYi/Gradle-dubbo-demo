@@ -19,75 +19,47 @@ public class Pageable implements Serializable {
 
     private static final long serialVersionUID = -3930180379790344299L;
 
-    /**
-     * 默认页码
-     */
+    /** 默认页码 */
     private static final int DEFAULT_PAGE_NUMBER = 1;
 
-    /**
-     * 默认每页记录数
-     */
+    /** 默认每页记录数 */
     private static final int DEFAULT_PAGE_SIZE = 20;
 
-    /**
-     * 最大每页记录数
-     */
+    /** 最大每页记录数 */
     private static final int MAX_PAGE_SIZE = 1000;
 
-    /**
-     * 页码
-     */
+    /** 页码 */
     private int pageNumber = DEFAULT_PAGE_NUMBER;
 
-    /**
-     * 每页记录数
-     */
+    /** 每页记录数 */
     private int pageSize = DEFAULT_PAGE_SIZE;
 
-    /**
-     * 搜索属性
-     */
+    /** 搜索属性 */
     private String searchProperty;
 
-    /**
-     * 搜索值
-     */
+    /** 搜索值 */
     private String searchValue;
 
-    /**
-     * 搜索运算符
-     */
+    /** 搜索运算符 */
     private Operator searchOperator;
 
-    /**
-     * 排序属性
-     */
+    /** 排序属性 */
     private String orderProperty;
 
-    /**
-     * 排序方向
-     */
+    /** 排序方向 */
     private Direction orderDirection;
 
-    /**
-     * 搜索名
-     */
+    /** 搜索名 */
     private String querySelectName;
 
-    /**
-     * 是否需要分组
-     */
+    /** 是否需要分组 */
     private boolean groupBy;
 
-    /**
-     * 筛选
-     */
-    private List<Filter> filters = new ArrayList<Filter>();
+    /** 筛选 */
+    private List<Filter> filters = new ArrayList<>();
 
-    /**
-     * 排序
-     */
-    private List<Order> orders = new ArrayList<Order>();
+    /** 排序 */
+    private List<Order> orders = new ArrayList<>();
 
     /**
      * 初始化一个新创建的Pageable对象

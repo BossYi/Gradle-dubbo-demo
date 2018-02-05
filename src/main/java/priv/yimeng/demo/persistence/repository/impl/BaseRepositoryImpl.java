@@ -1,13 +1,18 @@
 package priv.yimeng.demo.persistence.repository.impl;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.core.DefaultParameterNameDiscoverer;
+import org.springframework.core.ParameterNameDiscoverer;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ConcurrentReferenceHashMap;
 import priv.yimeng.demo.persistence.Filter;
 import priv.yimeng.demo.persistence.Order;
 import priv.yimeng.demo.persistence.Page;
 import priv.yimeng.demo.persistence.Pageable;
+import priv.yimeng.demo.persistence.annotation.QuerySelect;
+import priv.yimeng.demo.persistence.annotation.QuerySelects;
 import priv.yimeng.demo.persistence.domain.BaseDO;
 import priv.yimeng.demo.persistence.domain.BaseOrderDO;
 import priv.yimeng.demo.persistence.repository.BaseRepository;
@@ -18,6 +23,7 @@ import javax.persistence.LockModeType;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import java.io.Serializable;
+import java.lang.reflect.Constructor;
 import java.util.*;
 
 /**
@@ -29,15 +35,22 @@ import java.util.*;
  */
 public class BaseRepositoryImpl<T, ID extends Serializable> extends SimpleJpaRepository<T, ID> implements BaseRepository<T, ID> {
 
-    /**
-     * SQL通配转义符
-     */
+    /** SQL通配转义符 */
     private static final char SQL_LIKE_ESCAPE = '/';
 
-    /**
-     * 属性分割符
-     */
+    /** 属性分割符 */
     private static final String PROPERTY_SEPARATOR = ".";
+
+    /** 别名前缀 */
+    private static volatile String ALIAS_PREFIX = "baseGeneratedAlias";
+
+    /** 别名数 */
+    private static volatile long ALIAS_COUNT = 0L;
+
+    private static final Integer MAX_ALIAS_COUNT = 1000;
+
+    private ConcurrentReferenceHashMap<String, CriteriaQuery<T>> querySelectQueryCaches = new ConcurrentReferenceHashMap<>(2);
+    private static final ParameterNameDiscoverer PARAMETER_NAME_DISCOVERER = new DefaultParameterNameDiscoverer();
 
     private final Class<T> domainClass;
     private final EntityManager entityManager;
@@ -67,6 +80,11 @@ public class BaseRepositoryImpl<T, ID extends Serializable> extends SimpleJpaRep
     }
 
     @Override
+    public List<T> list(String querySelectName) {
+        return list(querySelectName, null, null, null, null);
+    }
+
+    @Override
     public List<T> list(String querySelectName, Integer first, Integer count, List<Filter> filters, List<Order> orders) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(domainClass);
@@ -76,6 +94,87 @@ public class BaseRepositoryImpl<T, ID extends Serializable> extends SimpleJpaRep
             criteriaQuery.select(criteriaQuery.from(domainClass));
         }
         return list(criteriaQuery, first, count, filters, orders);
+    }
+
+    @Override
+    public Page<T> listPage(Pageable pageable) {
+        return null;
+    }
+
+    @Override
+    public Page<T> listPage(CriteriaQuery<T> criteriaQuery, Pageable pageable) {
+        return null;
+    }
+
+    @Override
+    public Long count(Filter... filters) {
+        return null;
+    }
+
+    @Override
+    public void persist(T entity) {
+        Assert.notNull(entity, "null");
+        entityManager.persist(entity);
+    }
+
+    @Override
+    public T merge(T entity) {
+        return null;
+    }
+
+    @Override
+    public void remove(T entity) {
+
+    }
+
+    @Override
+    public void refresh(T entity) {
+
+    }
+
+    @Override
+    public void refresh(T entity, LockModeType lockModeType) {
+
+    }
+
+    @Override
+    public ID getIdentifier(T entity) {
+        return null;
+    }
+
+    @Override
+    public boolean isLoaded(T entity) {
+        return false;
+    }
+
+    @Override
+    public boolean isLoaded(T entity, String attributeName) {
+        return false;
+    }
+
+    @Override
+    public boolean isManaged(T entity) {
+        return false;
+    }
+
+    @Override
+    public void detach(T entity) {
+
+    }
+
+    @Override
+    public LockModeType getLockMode(T entity) {
+        return null;
+    }
+
+    @Override
+    public void lock(T entity, LockModeType lockModeType) {
+
+    }
+
+    @Override
+    public void clear() {
+
     }
 
     private List<T> list(CriteriaQuery<T> criteriaQuery, Integer first, Integer count, List<Filter> filters, List<Order> orders) {
@@ -124,7 +223,128 @@ public class BaseRepositoryImpl<T, ID extends Serializable> extends SimpleJpaRep
         return null;
     }
 
+    /**
+     * 构建criteriaQuery select
+     *
+     * @param querySelectName querySelectName
+     * @param criteriaQuery   criteriaQuery
+     */
     private void buildQuerySelect(String querySelectName, CriteriaQuery<T> criteriaQuery) {
+        CriteriaQuery<T> queryCache = querySelectQueryCaches.get(querySelectName);
+        if (queryCache == null) {
+            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+            queryCache = criteriaBuilder.createQuery(domainClass);
+            String[] parameters = getSelection(querySelectName);
+            Root<T> root = queryCache.from(domainClass);
+            Expression<?>[] selections = new Expression[parameters.length];
+            for (int i = 0; i < parameters.length; i++) {
+                String[] tempPaths = StringUtils.split(parameters[i], PROPERTY_SEPARATOR);
+                From<?, ?> from = root;
+                for (int j = 0; j < tempPaths.length - 1; j++) {
+                    from = getJoin(from, tempPaths[j], JoinType.LEFT);
+                }
+                selections[i] = from.get(tempPaths[tempPaths.length - 1]);
+                if (BaseDO.class.isAssignableFrom(selections[i].getJavaType())) {
+                    getJoin(from, parameters[i], JoinType.LEFT);
+                }
+            }
+            queryCache.multiselect(selections);
+            querySelectQueryCaches.put(querySelectName, queryCache);
+        }
+        Selection<T> selection = queryCache.getSelection();
+        criteriaQuery.select(selection);
+        for (Root<?> root : queryCache.getRoots()) {
+            Root<?> des = criteriaQuery.from(root.getJavaType());
+            des.alias(getAlias(root));
+            copyJoins(root, des);
+        }
+    }
+
+    private synchronized String getAlias(Selection<?> selection) {
+        if (selection == null) {
+            return null;
+        }
+        String alias = selection.getAlias();
+        if (alias == null) {
+            if (ALIAS_COUNT >= MAX_ALIAS_COUNT) {
+                ALIAS_COUNT = 0;
+            }
+            alias = ALIAS_PREFIX + ALIAS_COUNT++;
+            selection.alias(alias);
+        }
+        return alias;
+    }
+
+    private void copyJoins(From<?, ?> from, From<?, ?> to) {
+        for (Join<?, ?> join : from.getJoins()) {
+            Join<?, ?> toJoin = to.join(join.getAttribute().getName(), join.getJoinType());
+            toJoin.alias(getAlias(join));
+            copyJoins(join, toJoin);
+        }
+        for (Fetch<?, ?> fetch : from.getFetches()) {
+            Fetch<?, ?> toFetch = to.fetch(fetch.getAttribute().getName());
+            copyFetches(fetch, toFetch);
+        }
+    }
+
+    private void copyFetches(Fetch<?, ?> from, Fetch<?, ?> to) {
+        for (Fetch<?, ?> fetch : from.getFetches()) {
+            Fetch<?, ?> toFetch = to.fetch(fetch.getAttribute().getName());
+            copyFetches(fetch, toFetch);
+        }
+    }
+
+    /**
+     * 通过在构造方法上的querySelect注解来确定select参数
+     *
+     * @param querySelectName querySelectName
+     * @return parameters
+     */
+    private String[] getSelection(String querySelectName) {
+        Constructor<?>[] constructors = domainClass.getConstructors();
+        String[] parameters = null;
+        for (Constructor<?> constructor : constructors) {
+            QuerySelect querySelect = constructor.getAnnotation(QuerySelect.class);
+            if (querySelect != null && querySelectName.equals(querySelect.name())) {
+                parameters = getSelectParameters(constructor, querySelect);
+                break;
+            }
+            QuerySelects querySelects = constructor.getAnnotation(QuerySelects.class);
+            if (querySelects != null) {
+                for (QuerySelect temp : querySelects.querySelect()) {
+                    if (temp.name().equals(querySelectName)) {
+                        parameters = getSelectParameters(constructor, temp);
+                        break;
+                    }
+                }
+                if (parameters != null) {
+                    break;
+                }
+            }
+        }
+        if (parameters == null) {
+            parameters = new String[0];
+        }
+        if (parameters.length > 0) {
+            return parameters;
+        } else {
+            throw new IllegalArgumentException("Can't find query select annotation by name [" + querySelectName + "]");
+        }
+    }
+
+    /**
+     * query parameters为空，就将构造函数的形参名作为select
+     *
+     * @param constructor 构造函数
+     * @param querySelect 注解
+     * @return 参数数组
+     */
+    private String[] getSelectParameters(Constructor<?> constructor, QuerySelect querySelect) {
+        String[] parameters = querySelect.parameters();
+        if (parameters.length == 0) {
+            parameters = PARAMETER_NAME_DISCOVERER.getParameterNames(constructor);
+        }
+        return parameters;
     }
 
 
@@ -313,87 +533,6 @@ public class BaseRepositoryImpl<T, ID extends Serializable> extends SimpleJpaRep
             }
         }
         criteriaQuery.orderBy(orderList);
-    }
-
-    @Override
-    public Page<T> listPage(Pageable pageable) {
-        return null;
-    }
-
-    @Override
-    public Page<T> listPage(CriteriaQuery<T> criteriaQuery, Pageable pageable) {
-        return null;
-    }
-
-    @Override
-    public Long count(Filter... filters) {
-        return null;
-    }
-
-    @Override
-    public void persist(T entity) {
-        Assert.notNull(entity, "null");
-        entityManager.persist(entity);
-    }
-
-    @Override
-    public T merge(T entity) {
-        return null;
-    }
-
-    @Override
-    public void remove(T entity) {
-
-    }
-
-    @Override
-    public void refresh(T entity) {
-
-    }
-
-    @Override
-    public void refresh(T entity, LockModeType lockModeType) {
-
-    }
-
-    @Override
-    public ID getIdentifier(T entity) {
-        return null;
-    }
-
-    @Override
-    public boolean isLoaded(T entity) {
-        return false;
-    }
-
-    @Override
-    public boolean isLoaded(T entity, String attributeName) {
-        return false;
-    }
-
-    @Override
-    public boolean isManaged(T entity) {
-        return false;
-    }
-
-    @Override
-    public void detach(T entity) {
-
-    }
-
-    @Override
-    public LockModeType getLockMode(T entity) {
-        return null;
-    }
-
-    @Override
-    public void lock(T entity, LockModeType lockModeType) {
-
-    }
-
-    @Override
-    public void clear() {
-
     }
 
 }

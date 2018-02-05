@@ -28,4 +28,9 @@ public class BaseServiceImpl<T extends BaseDO<ID>, ID extends Serializable> impl
         return baseRepository.list(filters);
     }
 
+    @Override
+    public List<T> list(String querySelectName) {
+        return baseRepository.list(querySelectName);
+    }
+
 }

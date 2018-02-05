@@ -4,6 +4,7 @@ import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.validator.constraints.Email;
+import priv.yimeng.demo.persistence.annotation.QuerySelect;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
@@ -23,6 +24,15 @@ import java.util.Set;
 @Data
 public class UserDO extends BaseDO<Long> implements Serializable {
     private static final long serialVersionUID = -8035876376127995860L;
+
+    public UserDO() {
+    }
+
+    @QuerySelect(name = "usernameAndPassword", parameters = {"username", "password"})
+    public UserDO(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
 
     @Column(updatable = false, nullable = false)
     @Size(max = 50)

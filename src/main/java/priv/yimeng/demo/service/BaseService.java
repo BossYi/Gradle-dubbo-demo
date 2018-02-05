@@ -23,4 +23,12 @@ public interface BaseService<T extends BaseDO<ID>, ID extends Serializable> {
      */
     List<T> list(Filter... filters);
 
+    /**
+     * 查找实体对象集合
+     *
+     * @param querySelectName 搜索名：实体上构造函数的@QuerySelect的名称
+     * @return 实体对象集合
+     */
+    List<T> list(String querySelectName);
+
 }

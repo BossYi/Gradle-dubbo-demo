@@ -72,4 +72,12 @@ public class RepositoryTest {
         }
     }
 
+    @Test
+    public void testQuerySelectName() {
+        List<UserDO> list = userService.list("usernameAndPassword");
+        for (UserDO userDO : list) {
+            System.out.println(userDO.getUsername() + ":" + userDO.getPassword());
+        }
+    }
+
 }

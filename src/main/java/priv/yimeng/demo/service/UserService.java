@@ -29,6 +29,7 @@ public interface UserService extends BaseService<UserDO, Long> {
     /**
      * 查找用户
      *
+     * @username username
      * @return userDO
      */
     UserDO findByUsernameCaseInsenstive(String username);

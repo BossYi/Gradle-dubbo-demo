@@ -48,6 +48,14 @@ public interface BaseRepository<T, ID extends Serializable> extends JpaRepositor
      * 查找实体对象集合
      *
      * @param querySelectName 搜索名：实体上构造函数的@QuerySelect的名称
+     * @return 实体对象集合
+     */
+    List<T> list(String querySelectName);
+
+    /**
+     * 查找实体对象集合
+     *
+     * @param querySelectName 搜索名：实体上构造函数的@QuerySelect的名称
      * @param first           起始记录
      * @param count           数量
      * @param filters         筛选
@@ -162,6 +170,7 @@ public interface BaseRepository<T, ID extends Serializable> extends JpaRepositor
      * 获取锁定方式
      *
      * @param entity 实体对象
+     * @return 锁定方式
      */
     LockModeType getLockMode(T entity);
 

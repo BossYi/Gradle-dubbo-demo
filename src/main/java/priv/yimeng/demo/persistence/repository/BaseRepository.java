@@ -8,7 +8,6 @@ import priv.yimeng.demo.persistence.Order;
 import priv.yimeng.demo.persistence.Page;
 import priv.yimeng.demo.persistence.Pageable;
 
-import javax.persistence.LockModeType;
 import javax.persistence.criteria.CriteriaQuery;
 import java.io.Serializable;
 import java.util.List;
@@ -22,8 +21,6 @@ import java.util.List;
 @NoRepositoryBean
 @Transactional(readOnly = true, rollbackFor = Exception.class)
 public interface BaseRepository<T, ID extends Serializable> extends JpaRepository<T, ID> {
-
-    T getOneObject(ID username);
 
     /**
      * 查找实体对象集合
@@ -90,104 +87,10 @@ public interface BaseRepository<T, ID extends Serializable> extends JpaRepositor
     Long count(Filter... filters);
 
     /**
-     * 持久化实体对象
+     * 更新实体
      *
-     * @param entity 实体对象
+     * @param t 实体
      */
-    void persist(T entity);
-
-    /**
-     * 合并实体对象
-     *
-     * @param entity 实体对象
-     * @return 实体对象
-     */
-    T merge(T entity);
-
-    /**
-     * 移除实体对象
-     *
-     * @param entity 实体对象
-     */
-    void remove(T entity);
-
-    /**
-     * 刷新实体对象
-     *
-     * @param entity 实体对象
-     */
-    void refresh(T entity);
-
-    /**
-     * 刷新实体对象
-     *
-     * @param entity       实体对象
-     * @param lockModeType 锁定方式
-     */
-    void refresh(T entity, LockModeType lockModeType);
-
-    /**
-     * 获取实体对象ID
-     *
-     * @param entity 实体对象
-     * @return 实体对象ID
-     */
-    ID getIdentifier(T entity);
-
-    /**
-     * 判断是否已加载
-     *
-     * @param entity 实体对象
-     * @return 是否已加载
-     */
-    boolean isLoaded(T entity);
-
-    /**
-     * 判断属性是否已加载
-     *
-     * @param entity        实体对象
-     * @param attributeName 属性名
-     * @return 是否已加载
-     */
-    boolean isLoaded(T entity, String attributeName);
-
-    /**
-     * 判断是否为托管状态
-     *
-     * @param entity 实体对象
-     * @return 是否为托管状态
-     */
-    boolean isManaged(T entity);
-
-    /**
-     * 设置为游离状态
-     *
-     * @param entity 实体对象
-     */
-    void detach(T entity);
-
-    /**
-     * 获取锁定方式
-     *
-     * @param entity 实体对象
-     * @return 锁定方式
-     */
-    LockModeType getLockMode(T entity);
-
-    /**
-     * 锁定实体对象
-     *
-     * @param entity       实体对象
-     * @param lockModeType 锁定方式
-     */
-    void lock(T entity, LockModeType lockModeType);
-
-    /**
-     * 清除缓存
-     * <pre>
-     * 全部整个jpa环境
-     * </pre>
-     */
-    void clear();
+    void update(T t);
 
 }

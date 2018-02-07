@@ -76,14 +76,4 @@ public abstract class BaseDO<ID extends Serializable> implements Serializable {
     @Column(nullable = false)
     private Long version;
 
-    /**
-     * 获取是否是未持久化实体
-     *
-     * @return 是否是未持久化实体
-     */
-    @Transient
-    public boolean isNew() {
-        return getId() == null;
-    }
-
 }

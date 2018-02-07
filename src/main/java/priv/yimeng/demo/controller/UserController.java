@@ -5,6 +5,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import priv.yimeng.demo.persistence.Page;
+import priv.yimeng.demo.persistence.Pageable;
 import priv.yimeng.demo.persistence.domain.UserDO;
 import priv.yimeng.demo.service.UserService;
 
@@ -33,9 +35,14 @@ public class UserController {
      *
      * @return list
      */
-    @RequestMapping("/list")
+    @RequestMapping("/list-all")
     public List<UserDO> list() {
         return userService.list();
+    }
+
+    @RequestMapping("/list")
+    public Page<UserDO> listPage(Pageable pageable) {
+        return userService.listPage(pageable);
     }
 
     /**

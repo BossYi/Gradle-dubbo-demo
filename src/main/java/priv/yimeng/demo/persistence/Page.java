@@ -35,6 +35,7 @@ public class Page<T> implements Serializable {
     /**
      * 分页信息
      */
+    @JSONField(serialize = false)
     private final Pageable pageable;
 
     /**

@@ -1,5 +1,6 @@
 package priv.yimeng.demo.persistence.domain;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -38,6 +39,7 @@ class GoodTypeDO extends BaseDO<Long> implements Serializable {
     private Integer order;
 
     @OneToMany(mappedBy = "goodTypeDO", fetch = FetchType.LAZY)
+    @JSONField(serialize = false)
     private Set<GoodInfoDO> goodInfoDOSet;
 
 

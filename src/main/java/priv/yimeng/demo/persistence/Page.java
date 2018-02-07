@@ -2,6 +2,7 @@ package priv.yimeng.demo.persistence;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Getter;
+import lombok.ToString;
 import priv.yimeng.demo.persistence.Order.Direction;
 
 import java.io.Serializable;
@@ -11,10 +12,11 @@ import java.util.List;
 /**
  * 分页
  *
- * @author yeliangqin
- * @version 3.0
+ * @author yimeng
+ * @version 1.0
  */
 @Getter
+@ToString
 public class Page<T> implements Serializable {
 
     private static final long serialVersionUID = -2053800594583879853L;
@@ -28,7 +30,7 @@ public class Page<T> implements Serializable {
     /**
      * 总记录数
      */
-    private final long total;
+    private final Long total;
 
     /**
      * 分页信息

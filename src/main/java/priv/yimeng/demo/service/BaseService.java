@@ -1,6 +1,8 @@
 package priv.yimeng.demo.service;
 
 import priv.yimeng.demo.persistence.Filter;
+import priv.yimeng.demo.persistence.Page;
+import priv.yimeng.demo.persistence.Pageable;
 import priv.yimeng.demo.persistence.domain.BaseDO;
 
 import java.io.Serializable;
@@ -30,5 +32,13 @@ public interface BaseService<T extends BaseDO<ID>, ID extends Serializable> {
      * @return 实体对象集合
      */
     List<T> list(String querySelectName);
+
+    /**
+     * 查询分页
+     *
+     * @param pageable 分页信息
+     * @return 实体对象集合
+     */
+    Page<T> listPage(Pageable pageable);
 
 }

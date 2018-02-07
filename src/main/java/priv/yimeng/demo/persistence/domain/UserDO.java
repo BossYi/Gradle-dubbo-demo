@@ -28,10 +28,10 @@ public class UserDO extends BaseDO<Long> implements Serializable {
     public UserDO() {
     }
 
-    @QuerySelect(name = "usernameAndPassword", parameters = {"username", "password"})
-    public UserDO(String username, String password) {
+    @QuerySelect(name = "idsAndNames", parameters = {"id", "username"})
+    public UserDO(Long id, String username) {
+        setId(id);
         this.username = username;
-        this.password = password;
     }
 
     @Column(updatable = false, nullable = false)

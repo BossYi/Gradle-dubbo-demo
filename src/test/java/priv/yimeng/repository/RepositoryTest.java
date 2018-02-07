@@ -8,6 +8,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import priv.yimeng.demo.persistence.Filter;
+import priv.yimeng.demo.persistence.Page;
+import priv.yimeng.demo.persistence.Pageable;
 import priv.yimeng.demo.persistence.domain.UserDO;
 import priv.yimeng.demo.service.UserService;
 
@@ -77,6 +79,31 @@ public class RepositoryTest {
         List<UserDO> list = userService.list("usernameAndPassword");
         for (UserDO userDO : list) {
             System.out.println(userDO.getUsername() + ":" + userDO.getPassword());
+        }
+    }
+
+    @Test
+    public void testListPage() {
+        Pageable pageable = new Pageable();
+        pageable.setPageNumber(1);
+        pageable.setPageSize(2);
+        pageable.setQuerySelectName("idsAndNames");
+        Page<UserDO> userDOPage = userService.listPage(pageable);
+        List<UserDO> userDOList = userDOPage.getContent();
+        for (UserDO userDO : userDOList) {
+            System.out.println(userDO.getPassword() + " : " + userDO.getUsername());
+        }
+    }
+
+    @Test
+    public void testGroupBy() {
+        Pageable pageable = new Pageable();
+        pageable.setGroupBy(true);
+        pageable.setQuerySelectName("idsAndNames");
+        Page<UserDO> userDOPage = userService.listPage(pageable);
+        List<UserDO> userDOList = userDOPage.getContent();
+        for (UserDO userDO : userDOList) {
+            System.out.println(userDO.toString());
         }
     }
 

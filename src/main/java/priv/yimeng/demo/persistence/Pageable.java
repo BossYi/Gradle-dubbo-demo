@@ -12,8 +12,8 @@ import java.util.List;
 /**
  * 分页信息
  *
- * @author yeliangqin
- * @version 3.0
+ * @author yimeng
+ * @version 1.0
  */
 public class Pageable implements Serializable {
 

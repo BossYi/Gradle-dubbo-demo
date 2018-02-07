@@ -3,6 +3,8 @@ package priv.yimeng.demo.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import priv.yimeng.demo.persistence.Filter;
+import priv.yimeng.demo.persistence.Page;
+import priv.yimeng.demo.persistence.Pageable;
 import priv.yimeng.demo.persistence.domain.BaseDO;
 import priv.yimeng.demo.persistence.repository.BaseRepository;
 import priv.yimeng.demo.service.BaseService;
@@ -31,6 +33,11 @@ public class BaseServiceImpl<T extends BaseDO<ID>, ID extends Serializable> impl
     @Override
     public List<T> list(String querySelectName) {
         return baseRepository.list(querySelectName);
+    }
+
+    @Override
+    public Page<T> listPage(Pageable pageable) {
+        return baseRepository.listPage(pageable);
     }
 
 }

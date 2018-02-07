@@ -1,5 +1,6 @@
 package priv.yimeng.demo.persistence.repository.impl;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.DefaultParameterNameDiscoverer;
 import org.springframework.core.ParameterNameDiscoverer;
@@ -50,6 +51,7 @@ public class BaseRepositoryImpl<T, ID extends Serializable> extends SimpleJpaRep
     private static final Integer MAX_ALIAS_COUNT = 1000;
 
     private ConcurrentReferenceHashMap<String, CriteriaQuery<T>> querySelectQueryCaches = new ConcurrentReferenceHashMap<>(2);
+    private ConcurrentReferenceHashMap<String, CriteriaQuery<T>> querySelectQueryGroupCaches = new ConcurrentReferenceHashMap<>(2);
     private static final ParameterNameDiscoverer PARAMETER_NAME_DISCOVERER = new DefaultParameterNameDiscoverer();
 
     private final Class<T> domainClass;
@@ -115,12 +117,47 @@ public class BaseRepositoryImpl<T, ID extends Serializable> extends SimpleJpaRep
 
     @Override
     public Page<T> listPage(CriteriaQuery<T> criteriaQuery, Pageable pageable) {
-        return null;
+        Assert.notNull(criteriaQuery, "criteriaQuery must not be null!");
+        Assert.notNull(criteriaQuery.getSelection(), "criteriaQuery.setSelection() must not be null!");
+        Assert.notEmpty(criteriaQuery.getRoots(), "criteriaQuery.getRoots() must not be empty!");
+        if (pageable == null) {
+            pageable = new Pageable();
+        }
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        Root<T> root = getRoot(criteriaQuery);
+        addRestrictions(criteriaQuery, pageable);
+        addOrders(criteriaQuery, pageable);
+
+        // 如果没有指定排序，使用默认排序
+        if (criteriaQuery.getOrderList().isEmpty()) {
+            if (BaseOrderDO.class.isAssignableFrom(domainClass)) {
+                criteriaQuery.orderBy(criteriaBuilder.asc(root.get(BaseOrderDO.ORDER_PROPERTY_NAME)));
+            } else if (BaseDO.class.isAssignableFrom(domainClass)) {
+                criteriaQuery.orderBy(criteriaBuilder.desc(root.get(BaseDO.CREATE_DATE_PROPERTY_NAME)));
+            }
+        }
+
+        Long total = 0L;
+        if (!pageable.getGroupBy()) {
+            total = count(criteriaQuery, null);
+        }
+        int totalPages = (int) Math.ceil((double) total / (double) pageable.getPageSize());
+
+        if (pageable.getPageNumber() > totalPages) {
+            pageable.setPageNumber(totalPages);
+        }
+        TypedQuery<T> tTypedQuery = entityManager.createQuery(criteriaQuery).setFlushMode(FlushModeType.COMMIT);
+        tTypedQuery.setFirstResult((pageable.getPageNumber() - 1) * pageable.getPageSize());
+        tTypedQuery.setMaxResults(pageable.getPageSize());
+        return new Page<>(tTypedQuery.getResultList(), total, pageable);
     }
 
     @Override
     public Long count(Filter... filters) {
-        return null;
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(domainClass);
+        criteriaQuery.select(criteriaQuery.from(domainClass));
+        return count(criteriaQuery, ArrayUtils.isNotEmpty(filters) ? Arrays.asList(filters) : null);
     }
 
     @Override
@@ -222,7 +259,7 @@ public class BaseRepositoryImpl<T, ID extends Serializable> extends SimpleJpaRep
         return getRoot(criteriaQuery, criteriaQuery.getResultType());
     }
 
-    private Root<T> getRoot(CriteriaQuery<T> criteriaQuery, Class<T> resultType) {
+    private Root<T> getRoot(CriteriaQuery<?> criteriaQuery, Class<T> resultType) {
         if (resultType == null || CollectionUtils.isEmpty(criteriaQuery.getRoots())) {
             return null;
         }
@@ -249,17 +286,7 @@ public class BaseRepositoryImpl<T, ID extends Serializable> extends SimpleJpaRep
             String[] parameters = getSelection(querySelectName);
             Root<T> root = queryCache.from(domainClass);
             Expression<?>[] selections = new Expression[parameters.length];
-            for (int i = 0; i < parameters.length; i++) {
-                String[] tempPaths = StringUtils.split(parameters[i], PROPERTY_SEPARATOR);
-                From<?, ?> from = root;
-                for (int j = 0; j < tempPaths.length - 1; j++) {
-                    from = getJoin(from, tempPaths[j], JoinType.LEFT);
-                }
-                selections[i] = from.get(tempPaths[tempPaths.length - 1]);
-                if (BaseDO.class.isAssignableFrom(selections[i].getJavaType())) {
-                    getJoin(from, parameters[i], JoinType.LEFT);
-                }
-            }
+            setSelection(parameters, selections, root, 0);
             queryCache.multiselect(selections);
             querySelectQueryCaches.put(querySelectName, queryCache);
         }
@@ -279,26 +306,28 @@ public class BaseRepositoryImpl<T, ID extends Serializable> extends SimpleJpaRep
      * @param criteriaQuery   criteriaQuery
      */
     private void buildQuerySelectGroup(String querySelectName, CriteriaQuery<T> criteriaQuery) {
-        CriteriaQuery<T> queryCache = querySelectQueryCaches.get(querySelectName);
+        CriteriaQuery<T> queryCache = querySelectQueryGroupCaches.get(querySelectName);
         if (queryCache == null) {
             CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
             queryCache = criteriaBuilder.createQuery(domainClass);
             String[] parameters = getSelection(querySelectName);
             Root<T> root = queryCache.from(domainClass);
             Expression<?>[] selections = new Expression[parameters.length];
-            for (int i = 0; i < parameters.length; i++) {
-                String[] tempPaths = StringUtils.split(parameters[i], PROPERTY_SEPARATOR);
-                From<?, ?> from = root;
-                for (int j = 0; j < tempPaths.length - 1; j++) {
-                    from = getJoin(from, tempPaths[j], JoinType.LEFT);
+            int i = 0;
+            if (parameters.length > 1) {
+                selections[0] = criteriaBuilder.count(root.get(parameters[1]));
+                Expression<?>[] groupBys = new Expression[parameters.length - 1];
+                for (i = 1; i < parameters.length; i++) {
+                    if (!parameters[i].contains(PROPERTY_SEPARATOR)) {
+                        groupBys[i - 1] = root.get(parameters[i]);
+                    }
                 }
-                selections[i] = from.get(tempPaths[tempPaths.length - 1]);
-                if (BaseDO.class.isAssignableFrom(selections[i].getJavaType())) {
-                    getJoin(from, parameters[i], JoinType.LEFT);
-                }
+                queryCache.groupBy(skipNull(groupBys));
+                i = 1;
             }
+            setSelection(parameters, selections, root, i);
             queryCache.multiselect(selections);
-            querySelectQueryCaches.put(querySelectName, queryCache);
+            querySelectQueryGroupCaches.put(querySelectName, queryCache);
         }
         Selection<T> selection = queryCache.getSelection();
         criteriaQuery.select(selection);
@@ -307,6 +336,33 @@ public class BaseRepositoryImpl<T, ID extends Serializable> extends SimpleJpaRep
             des.alias(getAlias(root));
             copyJoins(root, des);
         }
+        if (queryCache.getGroupList() != null && !queryCache.getGroupList().isEmpty()) {
+            criteriaQuery.groupBy(queryCache.getGroupList());
+            if (queryCache.getGroupRestriction() != null) {
+                criteriaQuery.having(queryCache.getGroupRestriction());
+            }
+        }
+    }
+
+    private void setSelection(String[] parameters, Expression[] selections, Root<T> root, int i) {
+        for (; i < parameters.length; i++) {
+            String[] tempPaths = StringUtils.split(parameters[i], PROPERTY_SEPARATOR);
+            From<?, ?> from = root;
+            for (int j = 0; j < tempPaths.length - 1; j++) {
+                from = getJoin(from, tempPaths[j], JoinType.LEFT);
+            }
+            selections[i] = from.get(tempPaths[tempPaths.length - 1]);
+        }
+    }
+
+    private static Expression<?>[] skipNull(Expression<?>[] groupBys) {
+        List<Expression<?>> temp = new ArrayList<>(groupBys.length);
+        for (Expression<?> t : groupBys) {
+            if (t != null) {
+                temp.add(t);
+            }
+        }
+        return temp.toArray(new Expression[0]);
     }
 
     private synchronized String getAlias(Selection<?> selection) {
@@ -409,6 +465,80 @@ public class BaseRepositoryImpl<T, ID extends Serializable> extends SimpleJpaRep
         Predicate predicate = criteriaQuery.getRestriction() != null ? criteriaQuery.getRestriction() : criteriaBuilder.conjunction();
         predicate = addFilters(filters, root, criteriaBuilder, predicate);
         criteriaQuery.where(predicate);
+    }
+
+    private void addRestrictions(CriteriaQuery<T> criteriaQuery, Pageable pageable) {
+        if (criteriaQuery == null || pageable == null) {
+            return;
+        }
+        Root<T> root = getRoot(criteriaQuery);
+        if (root == null) {
+            return;
+        }
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        Predicate predicate = criteriaQuery.getRestriction() != null ? criteriaQuery.getRestriction() : criteriaBuilder.conjunction();
+        if (StringUtils.isNotEmpty(pageable.getSearchProperty()) && StringUtils.isNotEmpty(pageable.getSearchValue())) {
+            if (pageable.getSearchOperator() == null) {
+                pageable.setSearchOperator(Filter.Operator.like);
+            }
+            pageable.getFilters().add(new Filter(pageable.getSearchProperty(), pageable.getSearchOperator(), pageable.getSearchValue()));
+        }
+        if (pageable.getFilters() != null) {
+            predicate = addFilters(pageable.getFilters(), root, criteriaBuilder, predicate);
+        }
+        criteriaQuery.where(predicate);
+    }
+
+    /**
+     * 添加排序
+     *
+     * @param criteriaQuery criteriaQuery
+     * @param orders        排序对象集合
+     */
+    private void addOrders(CriteriaQuery<T> criteriaQuery, List<Order> orders) {
+        if (criteriaQuery == null || orders == null || orders.isEmpty()) {
+            return;
+        }
+        Root<T> root = getRoot(criteriaQuery);
+        if (root == null) {
+            return;
+        }
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        List<javax.persistence.criteria.Order> orderList = new ArrayList<>();
+        if (!criteriaQuery.getOrderList().isEmpty()) {
+            orderList.addAll(criteriaQuery.getOrderList());
+        }
+        for (Order order : orders) {
+            Path<T> path = root;
+            for (String property : StringUtils.split(order.getProperty(), PROPERTY_SEPARATOR)) {
+                path = path.get(property);
+            }
+            if (order.getDirection().equals(Order.Direction.asc)) {
+                orderList.add(criteriaBuilder.asc(path));
+            }
+            if (order.getDirection().equals(Order.Direction.desc)) {
+                orderList.add(criteriaBuilder.desc(path));
+            }
+        }
+        criteriaQuery.orderBy(orderList);
+    }
+
+    private void addOrders(CriteriaQuery<T> criteriaQuery, Pageable pageable) {
+        if (criteriaQuery == null || pageable == null) {
+            return;
+        }
+        Root<T> root = getRoot(criteriaQuery);
+        if (root == null) {
+            return;
+        }
+        List<Order> orders = new ArrayList<>();
+        if (StringUtils.isNotEmpty(pageable.getOrderProperty()) && pageable.getOrderDirection() != null) {
+            orders.add(new Order(pageable.getOrderProperty(), pageable.getOrderDirection()));
+        }
+        if (pageable.getOrders() != null) {
+            orders.addAll(pageable.getOrders());
+        }
+        addOrders(criteriaQuery, orders);
     }
 
     /**
@@ -521,6 +651,34 @@ public class BaseRepositoryImpl<T, ID extends Serializable> extends SimpleJpaRep
         return predicate;
     }
 
+    private Long count(CriteriaQuery<T> criteriaQuery, List<Filter> filters) {
+        Assert.notNull(criteriaQuery, "criteriaQuery must not be null!");
+        Assert.notNull(criteriaQuery.getSelection(), "select must not be null!");
+        Assert.notNull(criteriaQuery.getRoots(), "root must not be null!");
+
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        addRestrictions(criteriaQuery, filters);
+
+        CriteriaQuery<Long> countCriteriaQuery = criteriaBuilder.createQuery(Long.class);
+        for (Root<?> root : criteriaQuery.getRoots()) {
+            Root<?> des = countCriteriaQuery.from(root.getJavaType());
+            des.alias(getAlias(root));
+            copyJoins(root, des);
+        }
+        Root<T> countRoot = getRoot(countCriteriaQuery, criteriaQuery.getResultType());
+        countCriteriaQuery.select(criteriaBuilder.countDistinct(countRoot));
+        if (criteriaQuery.getGroupList() != null) {
+            countCriteriaQuery.groupBy(criteriaQuery.getGroupList());
+        }
+        if (criteriaQuery.getGroupRestriction() != null) {
+            countCriteriaQuery.having(criteriaQuery.getGroupRestriction());
+        }
+        if (criteriaQuery.getRestriction() != null) {
+            countCriteriaQuery.where(criteriaQuery.getRestriction());
+        }
+        return entityManager.createQuery(countCriteriaQuery).setFlushMode(FlushModeType.COMMIT).getSingleResult();
+    }
+
     private String escapeSqlLike(String likeSql, char escape) {
         likeSql = likeSql.replace(escape + "", escape + "" + escape);
         likeSql = likeSql.replace("%", escape + "%");
@@ -548,40 +706,6 @@ public class BaseRepositoryImpl<T, ID extends Serializable> extends SimpleJpaRep
             }
         }
         return from.join(tempPath, joinType);
-    }
-
-    /**
-     * 添加排序
-     *
-     * @param criteriaQuery criteriaQuery
-     * @param orders        排序对象集合
-     */
-    private void addOrders(CriteriaQuery<T> criteriaQuery, List<Order> orders) {
-        if (criteriaQuery == null || orders == null || orders.isEmpty()) {
-            return;
-        }
-        Root<T> root = getRoot(criteriaQuery);
-        if (root == null) {
-            return;
-        }
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        List<javax.persistence.criteria.Order> orderList = new ArrayList<>();
-        if (!criteriaQuery.getOrderList().isEmpty()) {
-            orderList.addAll(criteriaQuery.getOrderList());
-        }
-        for (Order order : orders) {
-            Path<T> path = root;
-            for (String property : StringUtils.split(order.getProperty(), PROPERTY_SEPARATOR)) {
-                path = path.get(property);
-            }
-            if (order.getDirection().equals(Order.Direction.asc)) {
-                orderList.add(criteriaBuilder.asc(path));
-            }
-            if (order.getDirection().equals(Order.Direction.desc)) {
-                orderList.add(criteriaBuilder.desc(path));
-            }
-        }
-        criteriaQuery.orderBy(orderList);
     }
 
 }

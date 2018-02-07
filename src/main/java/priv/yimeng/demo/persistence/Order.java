@@ -7,8 +7,8 @@ import java.io.Serializable;
 /**
  * 排序
  *
- * @author yeliangqin
- * @version 3.0
+ * @author yimeng
+ * @version 1.0
  */
 @Data
 public class Order implements Serializable {

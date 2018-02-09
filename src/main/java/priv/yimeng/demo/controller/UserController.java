@@ -1,5 +1,7 @@
 package priv.yimeng.demo.controller;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,8 +42,9 @@ public class UserController {
         return userService.list();
     }
 
-    @RequestMapping("/list")
-    public Page<UserDO> listPage(Pageable pageable) {
+    @ApiOperation(value = "分页显示所有用户", notes = "分页显示")
+    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    public Page<UserDO> listPage(@ApiParam Pageable pageable) {
         return userService.listPage(pageable);
     }
 

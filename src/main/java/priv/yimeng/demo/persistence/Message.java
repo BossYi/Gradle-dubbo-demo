@@ -44,7 +44,7 @@ public class Message implements Serializable {
     /**
      * 内容
      */
-    private String content;
+    private String msg;
 
     /**
      * 数据
@@ -61,45 +61,68 @@ public class Message implements Serializable {
     /**
      * 初始化一个新创建的 Message 对象
      *
-     * @param type    类型
-     * @param content 内容
+     * @param type 类型
+     * @param msg  内容
      */
-    public Message(Type type, String content) {
+    public Message(Type type, String msg) {
         this.type = type;
-        this.content = content;
+        this.msg = msg;
+    }
+
+    /**
+     * 初始化一个新创建的 Message 对象
+     *
+     * @param type 类型
+     * @param msg  内容
+     * @param data 数据
+     */
+    public Message(Type type, String msg, Serializable data) {
+        this.type = type;
+        this.msg = msg;
+        this.data = data;
     }
 
     /**
      * 返回成功消息
      *
-     * @param content 内容
-     * @param args    参数
+     * @param msg 内容
      * @return 成功消息
      */
-    public static Message success(String content, Object... args) {
-        return new Message(Type.success, content);
+    public static Message success(String msg) {
+        return new Message(Type.success, msg, null);
+    }
+
+    /**
+     * 返回成功消息
+     *
+     * @param msg  内容
+     * @param data 数据
+     * @return 成功消息
+     */
+    public static Message success(String msg, Serializable data) {
+        return new Message(Type.success, msg, data);
     }
 
     /**
      * 返回警告消息
      *
-     * @param content 内容
+     * @param msg 内容
      * @param args    参数
      * @return 警告消息
      */
-    public static Message warn(String content, Object... args) {
-        return new Message(Type.warn, content);
+    public static Message warn(String msg) {
+        return new Message(Type.warn, msg);
     }
 
     /**
      * 返回错误消息
      *
-     * @param content 内容
+     * @param msg 内容
      * @param args    参数
      * @return 错误消息
      */
-    public static Message error(String content, Object... args) {
-        return new Message(Type.error, content);
+    public static Message error(String msg) {
+        return new Message(Type.error, msg);
     }
 
 }

@@ -18,6 +18,14 @@ import java.util.List;
 public interface BaseService<T extends BaseDO<ID>, ID extends Serializable> {
 
     /**
+     * 根据id获取实体
+     *
+     * @param id id
+     * @return t
+     */
+    T get(ID id);
+
+    /**
      * 依据条件筛选集合
      *
      * @param filters 筛选
@@ -40,5 +48,13 @@ public interface BaseService<T extends BaseDO<ID>, ID extends Serializable> {
      * @return 实体对象集合
      */
     Page<T> listPage(Pageable pageable);
+
+    /**
+     * 保存实体
+     *
+     * @param t object
+     * @return t
+     */
+    T save(T t);
 
 }

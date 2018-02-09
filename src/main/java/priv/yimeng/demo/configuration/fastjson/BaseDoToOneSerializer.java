@@ -2,7 +2,6 @@ package priv.yimeng.demo.configuration.fastjson;
 
 import com.alibaba.fastjson.serializer.JSONSerializer;
 import com.alibaba.fastjson.serializer.ObjectSerializer;
-import org.springframework.core.ResolvableType;
 import org.springframework.util.Assert;
 import priv.yimeng.demo.annotations.JsonSerializeField;
 import priv.yimeng.demo.utils.BaseDoSerializeUtils;
@@ -25,13 +24,11 @@ public class BaseDoToOneSerializer implements ObjectSerializer {
         Assert.notNull(object, "object must not be null");
         Assert.notNull(fieldName, "fieldName must not be null");
 
-        ResolvableType resolvableType = ResolvableType.forInstance(object);
-        Class<? extends ResolvableType> clazz = resolvableType.getClass();
-        JsonSerializeField annotation = BaseDoSerializeUtils.getJsonSerializeFiled(clazz, (String) fieldName);
+        JsonSerializeField annotation = BaseDoSerializeUtils.getJsonSerializedFieldOnClass(object.getClass());
         if (annotation == null) {
-            serializer.write(object.getClass().getName());
+            serializer.write(object);
         } else {
-
+            BaseDoSerializeUtils.serializeUsingPropertyPreFilter(serializer, object, annotation.value());
         }
     }
 }

@@ -11,7 +11,7 @@ import java.util.List;
  * @author yimeng
  * @version 1.0
  */
-public interface GoodInfoService {
+public interface GoodInfoService extends BaseService<GoodInfoDO, Long> {
 
     /**
      * 根据类型查找

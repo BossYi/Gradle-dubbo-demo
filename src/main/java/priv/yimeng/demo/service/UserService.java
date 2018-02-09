@@ -12,13 +12,6 @@ import priv.yimeng.demo.persistence.domain.UserDO;
 public interface UserService extends BaseService<UserDO, Long> {
 
     /**
-     * 保存
-     *
-     * @param userDO 用户DO
-     */
-    void save(UserDO userDO);
-
-    /**
      * 查询单个用户
      *
      * @param username username

@@ -16,7 +16,7 @@ import java.util.List;
  * @version 1.0
  */
 @Service
-public class GoodInfoServiceImpl implements GoodInfoService {
+public class GoodInfoServiceImpl extends BaseServiceImpl<GoodInfoDO, Long> implements GoodInfoService {
 
     private final GoodInfoRepository goodInfoRepository;
 

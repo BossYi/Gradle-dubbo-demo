@@ -10,7 +10,7 @@ import java.lang.annotation.*;
  * @version 1.0
  */
 @Documented
-@Target(ElementType.FIELD)
+@Target({ElementType.FIELD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface JsonSerializeField {
 

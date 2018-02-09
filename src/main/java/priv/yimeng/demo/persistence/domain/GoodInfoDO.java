@@ -3,7 +3,6 @@ package priv.yimeng.demo.persistence.domain;
 import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import priv.yimeng.demo.annotations.JsonSerializeField;
 import priv.yimeng.demo.configuration.fastjson.BaseDoToOneSerializer;
 
 import javax.persistence.*;
@@ -40,7 +39,6 @@ class GoodInfoDO extends BaseDO<Long> {
     private Integer order;
 
     /** 商品类型 */
-    @JsonSerializeField(value = {"name", "show"})
     @JSONField(serializeUsing = BaseDoToOneSerializer.class)
     @ManyToOne(targetEntity = GoodTypeDO.class)
     @JoinColumn(name = "good_type_id")

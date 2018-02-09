@@ -26,6 +26,11 @@ public class BaseServiceImpl<T extends BaseDO<ID>, ID extends Serializable> impl
     private BaseRepository<T, ID> baseRepository;
 
     @Override
+    public T get(ID id) {
+        return baseRepository.findOne(id);
+    }
+
+    @Override
     public List<T> list(Filter... filters) {
         return baseRepository.list(filters);
     }
@@ -40,4 +45,8 @@ public class BaseServiceImpl<T extends BaseDO<ID>, ID extends Serializable> impl
         return baseRepository.listPage(pageable);
     }
 
+    @Override
+    public T save(T t) {
+        return baseRepository.save(t);
+    }
 }

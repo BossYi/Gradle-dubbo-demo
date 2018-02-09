@@ -3,18 +3,8 @@ package priv.yimeng.demo.service;
 import priv.yimeng.demo.persistence.domain.GoodTypeDO;
 
 /**
- * Desc:
- * Author:  yimeng
- * Date:    2017-11-28
- * Time:    22:54
+ * @author yimeng
  */
-public interface GoodTypeService {
+public interface GoodTypeService extends BaseService<GoodTypeDO, Long> {
 
-    /**
-     * 查询单个goodType
-     *
-     * @param id id
-     * @return goodType
-     */
-    GoodTypeDO findOne(Long id);
 }

@@ -24,11 +24,6 @@ public class UserServiceImpl extends BaseServiceImpl<UserDO, Long> implements Us
     }
 
     @Override
-    public void save(UserDO userDO) {
-        userRepository.save(userDO);
-    }
-
-    @Override
     public UserDO findOne(String username) {
         return userRepository.findByUsername(username);
     }

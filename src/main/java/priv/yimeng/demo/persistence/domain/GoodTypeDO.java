@@ -1,10 +1,13 @@
 package priv.yimeng.demo.persistence.domain;
 
-import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import priv.yimeng.demo.annotations.JsonSerializeField;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.io.Serializable;
 import java.util.Set;
 
@@ -18,6 +21,7 @@ import java.util.Set;
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "good_type")
+@JsonSerializeField(value = {"id", "name"})
 public @Data
 class GoodTypeDO extends BaseDO<Long> implements Serializable {
 
@@ -38,8 +42,7 @@ class GoodTypeDO extends BaseDO<Long> implements Serializable {
     @Column(name = "t_order")
     private Integer order;
 
-    @OneToMany(mappedBy = "goodTypeDO", fetch = FetchType.LAZY)
-    @JSONField(serialize = false)
+    @Transient
     private Set<GoodInfoDO> goodInfoDOSet;
 
 

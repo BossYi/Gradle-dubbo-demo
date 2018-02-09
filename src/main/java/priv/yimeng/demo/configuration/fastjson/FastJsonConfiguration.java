@@ -40,10 +40,9 @@ public class FastJsonConfiguration extends WebMvcConfigurerAdapter {
         FastJsonConfig config = new FastJsonConfig();
 
         config.setSerializerFeatures(
-                SerializerFeature.WriteMapNullValue,
-                SerializerFeature.DisableCircularReferenceDetect,
-                SerializerFeature.WriteNullStringAsEmpty
+                SerializerFeature.DisableCircularReferenceDetect
         );
+        config.setDateFormat("yyyy-MM-dd HH:mm:ss");
 
         messageConverter.setFastJsonConfig(config);
         converters.add(messageConverter);

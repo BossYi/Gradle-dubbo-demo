@@ -49,4 +49,18 @@ public class Function {
         List<Integer> integers = Arrays.asList(1, 2, 3, 4, 5, 6);
         System.out.println(integers.stream().map(n -> n * n).reduce((x, y) -> x + y).get());
     }
+
+    @Test
+    public void testStreamApi() {
+        List<Integer> integers = Arrays.asList(1, 2, 3, 4, 5, 6);
+        integers.stream().filter(n -> n % 2 == 0).sorted((x, y) -> {
+            if (x < y) {
+                return 1;
+            } else if (x.equals(y)) {
+                return 0;
+            } else {
+                return -1;
+            }
+        }).forEach(System.out::println);
+    }
 }

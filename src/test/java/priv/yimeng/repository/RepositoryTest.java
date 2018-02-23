@@ -46,7 +46,7 @@ public class RepositoryTest {
 
     @Test
     public void testGetOneObject() {
-        UserDO user = userService.findOne("yimeng");
+        UserDO user = userService.findOne("admin");
         log.info(user.toString());
     }
 

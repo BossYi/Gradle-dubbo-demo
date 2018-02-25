@@ -1,0 +1,7 @@
+include 'common-shiro'
+include 'common-configuration'
+include 'common-core'
+include 'common-web'
+include 'common-log'
+include 'hsh'
+

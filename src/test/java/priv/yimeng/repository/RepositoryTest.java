@@ -10,7 +10,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import priv.yimeng.demo.persistence.Filter;
 import priv.yimeng.demo.persistence.Page;
 import priv.yimeng.demo.persistence.Pageable;
+import priv.yimeng.demo.persistence.domain.Position;
 import priv.yimeng.demo.persistence.domain.UserDO;
+import priv.yimeng.demo.service.PositionService;
 import priv.yimeng.demo.service.UserService;
 
 import java.util.Date;
@@ -34,6 +36,9 @@ public class RepositoryTest {
 
     @Autowired
     private TestRestTemplate testRestTemplate;
+
+    @Autowired
+    private PositionService positionService;
 
     @Test
     public void testListUser() {
@@ -104,6 +109,30 @@ public class RepositoryTest {
         List<UserDO> userDOList = userDOPage.getContent();
         for (UserDO userDO : userDOList) {
             System.out.println(userDO.toString());
+        }
+    }
+
+    @Test
+    public void savePosition(){
+
+        for (int i = 0; i < 100; i++) {
+            Position position = new Position();
+            position.setApplyStatus(1);
+            position.setAreaName("中国" + i);
+            position.setCityName("深圳" + i);
+            position.setCollection(1);
+            position.setCompanyId(1 + i);
+            position.setCompanyName("英迈思" + i);
+            position.setImages("http://123.jpg");
+            position.setLogo("http://123.jpg");
+            position.setMaxMoney((double) 10000 + i);
+            position.setMinMoney((double) 100 + i);
+            position.setPName("中国");
+            position.setNumName("10" + i);
+            position.setPostDetail("中国");
+            position.setSex(1);
+            position.setSynopsis("中国");
+            positionService.save(position);
         }
     }
 

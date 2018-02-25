@@ -34,13 +34,6 @@ public class CommonWebMvcConfiguration extends WebMvcConfigurerAdapter {
     }
 
     @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        //registry.addInterceptor(new SessionInterceptor()).addPathPatterns("/**");
-        //registry.addInterceptor(new LogInterceptor()).addPathPatterns("/**");
-        super.addInterceptors(registry);
-    }
-
-    @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/ci/resources/**").addResourceLocations("classpath:/static/");
     }

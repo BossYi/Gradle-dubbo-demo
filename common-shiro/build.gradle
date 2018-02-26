@@ -1,0 +1,16 @@
+version 'unspecified'
+
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile project(':common-core')
+
+    compile 'org.apache.shiro:shiro-spring-boot-web-starter:1.4.0'
+
+}

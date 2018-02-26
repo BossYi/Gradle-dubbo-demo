@@ -1,0 +1,11 @@
+# Auto Configure
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+priv.yimeng.common.configuration.druid.DruidConfiguration,\
+priv.yimeng.common.configuration.jpa.SpringDataJpaConfiguration,\
+priv.yimeng.common.configuration.fastjson.FastJsonConfiguration,\
+priv.yimeng.common.configuration.shiro.CommonShiroAutoConfiguration,\
+priv.yimeng.common.configuration.freemarker.FreeMarkerWebConfiguration,\
+priv.yimeng.common.configuration.web.CommonWebMvcConfiguration,\
+priv.yimeng.common.configuration.swagger.Swagger2Configuration
+
+

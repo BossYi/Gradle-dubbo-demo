@@ -14,7 +14,7 @@ import priv.yimeng.common.core.repository.BaseRepositoryFactoryBean;
  */
 @Configuration
 @EnableJpaRepositories(
-        basePackages = "priv.yimeng.common.core.repository",
+        basePackages = "priv.yimeng.common.*.repository.**",
         repositoryFactoryBeanClass = BaseRepositoryFactoryBean.class
 )
 @EntityScan("priv.yimeng.common.*.entity")

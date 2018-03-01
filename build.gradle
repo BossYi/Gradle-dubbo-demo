@@ -63,3 +63,8 @@ subprojects {
     }
 }
 
+project(":common-configuration") {
+    apply plugin: 'eclipse-wtp'
+    apply plugin: 'war'
+}
+

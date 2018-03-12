@@ -1,3 +1,9 @@
+server:
+  port: 8080
+management:
+  port: 8081
+  security:
+    enabled: false
 spring:
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
@@ -42,3 +48,20 @@ spring:
   devtools:
     restart:
       exclude: static/**,templates/**
+  application:
+    name: hsh-provider
+dubbo:
+  scan:
+    base-packages: priv.yimeng.common.hsh.service
+  application:
+    id: hsh-provider
+    name: hsh-provider
+  protocol:
+    id: dubbo
+    name: dubbo
+    port: 12345
+  registry:
+    id: zookeeper
+    address: zookeeper://127.0.0.1:2181
+    client: zkclient
+    protocol: zookeeper

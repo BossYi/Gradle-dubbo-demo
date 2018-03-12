@@ -1,9 +1,10 @@
-package priv.yimeng.common.configuration.web;
+package priv.yimeng.common.hsh.configuration.web;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.*;
-import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
+import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 /**
  * Description: ${DESCRIPTION}
@@ -14,19 +15,6 @@ import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
  */
 @Configuration
 public class CommonWebMvcConfiguration extends WebMvcConfigurerAdapter {
-
-    private final FreeMarkerViewResolver freeMarkerViewResolver;
-
-    @Autowired
-    public CommonWebMvcConfiguration(FreeMarkerViewResolver freeMarkerViewResolver) {
-        this.freeMarkerViewResolver = freeMarkerViewResolver;
-    }
-
-    @Override
-    public void configureViewResolvers(ViewResolverRegistry registry) {
-        registry.viewResolver(freeMarkerViewResolver);
-        super.configureViewResolvers(registry);
-    }
 
     @Override
     public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {

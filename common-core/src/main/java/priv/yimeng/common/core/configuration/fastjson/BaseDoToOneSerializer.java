@@ -1,4 +1,4 @@
-package priv.yimeng.common.configuration.fastjson;
+package priv.yimeng.common.core.configuration.fastjson;
 
 import com.alibaba.fastjson.serializer.JSONSerializer;
 import com.alibaba.fastjson.serializer.ObjectSerializer;

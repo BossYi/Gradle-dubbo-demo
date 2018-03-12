@@ -5,15 +5,13 @@ apply plugin: 'java'
 sourceCompatibility = 1.8
 
 dependencies {
-    compile "org.springframework.boot:spring-boot-starter-jdbc"
-    compile "org.springframework.boot:spring-boot-starter-web"
-    compile "org.springframework.boot:spring-boot-starter-data-jpa"
-    compile "com.alibaba:druid-spring-boot-starter:$druidVersion"
-    compile "com.alibaba:fastjson:$fastjsonVersion"
-    compile "mysql:mysql-connector-java:$mysqlDriverVersion"
 
-    compile 'io.springfox:springfox-swagger2:2.8.0'
-    compile 'io.springfox:springfox-swagger-ui:2.8.0'
+    compile project(":common-configuration")
+
+    compile "org.springframework.boot:spring-boot-starter-data-jpa"
+    compile "org.springframework.boot:spring-boot-starter-web"
+    compile "com.alibaba:fastjson:$fastjsonVersion"
+
 
 }
 

@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        springBootVersion = '1.5.8.RELEASE'
+        springBootVersion = '1.5.6.RELEASE'
     }
     repositories {
         mavenLocal()
@@ -32,6 +32,9 @@ subprojects {
         mavenCentral()
         maven {
             url 'http://maven.aliyun.com/nexus/content/groups/public/'
+        }
+        maven {
+            url 'https://oss.sonatype.org/content/repositories/snapshots'
         }
     }
 

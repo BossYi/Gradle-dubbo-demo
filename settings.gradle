@@ -3,5 +3,5 @@ include 'common-configuration'
 include 'common-core'
 include 'common-web'
 include 'common-log'
-include 'hsh'
+include 'hsh-provider'
 

@@ -1,4 +1,4 @@
-include 'common-shiro'
+include 'common-security'
 include 'common-configuration'
 include 'common-core'
 include 'common-web'

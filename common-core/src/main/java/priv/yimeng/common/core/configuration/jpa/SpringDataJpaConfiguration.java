@@ -14,10 +14,10 @@ import priv.yimeng.common.core.repository.BaseRepositoryFactoryBean;
  */
 @Configuration
 @EnableJpaRepositories(
-        basePackages = "priv.yimeng.common.*.repository.**",
+        basePackages = "priv.yimeng.common.core.repository",
         repositoryFactoryBeanClass = BaseRepositoryFactoryBean.class
 )
-@EntityScan("priv.yimeng.common.*.entity")
+@EntityScan("priv.yimeng.common.core.entity")
 @ConditionalOnMissingBean(BaseRepositoryFactoryBean.class)
 public class SpringDataJpaConfiguration {
 }

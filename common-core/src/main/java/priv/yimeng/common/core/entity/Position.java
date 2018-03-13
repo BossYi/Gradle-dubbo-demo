@@ -1,8 +1,7 @@
-package priv.yimeng.common.hsh.entity;
+package priv.yimeng.common.core.entity;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import priv.yimeng.common.core.entity.BaseDO;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

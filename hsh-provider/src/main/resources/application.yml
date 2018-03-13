@@ -10,7 +10,7 @@ spring:
     driver-class-name: com.mysql.jdbc.Driver
     url: jdbc:mysql://127.0.0.1:3306/gradle-demo?characterEncoding=utf8
     username: root
-    password: root
+    password: yimeng1314
     druid:
       #最大活跃数
       max-active: 20
@@ -45,23 +45,12 @@ spring:
     properties:
       hibernate:
         enable_lazy_load_no_trans: true
-  devtools:
-    restart:
-      exclude: static/**,templates/**
-  application:
-    name: hsh-provider
-dubbo:
-  scan:
-    base-packages: priv.yimeng.common.hsh.service
-  application:
-    id: hsh-provider
-    name: hsh-provider
-  protocol:
-    id: dubbo
-    name: dubbo
-    port: 12345
-  registry:
-    id: zookeeper
-    address: zookeeper://127.0.0.1:2181
-    client: zkclient
-    protocol: zookeeper
+  dubbo:
+    scan: priv.yimeng.common.hsh.service
+    application:
+      name: hsh-provider
+    registry:
+      address: zookeeper://127.0.0.1:2181
+    protocol:
+      name: dubbo
+      port: 20880

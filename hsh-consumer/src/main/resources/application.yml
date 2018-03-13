@@ -1,10 +1,15 @@
+server:
+  port: 8083
+management:
+  security:
+    enabled: false
 spring:
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: com.mysql.jdbc.Driver
     url: jdbc:mysql://127.0.0.1:3306/gradle-demo?characterEncoding=utf8
     username: root
-    password: root
+    password: yimeng1314
     druid:
       #最大活跃数
       max-active: 20
@@ -39,3 +44,10 @@ spring:
     properties:
       hibernate:
         enable_lazy_load_no_trans: true
+  dubbo:
+    scan: priv.yimeng.common.hsh.controller
+    application:
+      name: hsh-consumer
+    registry:
+      address: zookeeper://127.0.0.1:2181
+      check: false

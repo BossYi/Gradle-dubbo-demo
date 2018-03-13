@@ -3,7 +3,6 @@ package priv.yimeng.common.hsh;
 import com.alibaba.dubbo.spring.boot.annotation.EnableDubboConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 
 /**
  * @author yimeng
@@ -11,9 +10,8 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 
 @SpringBootApplication
 @EnableDubboConfiguration
-@EntityScan(basePackages = "priv.yimeng.common.core.entity")
-public class HshProviderApplication {
+public class HshConsumerApplication {
     public static void main(String[] args) {
-        SpringApplication.run(HshProviderApplication.class, args);
+        SpringApplication.run(HshConsumerApplication.class, args);
     }
 }

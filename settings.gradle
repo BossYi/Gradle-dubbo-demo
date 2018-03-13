@@ -4,4 +4,5 @@ include 'common-core'
 include 'common-web'
 include 'common-log'
 include 'hsh-provider'
+include 'hsh-consumer'
 
